@@ -1,0 +1,14 @@
+C:\Windows\System32\drivers\etc - hosts file
+	127.0.0.1 cityit.localhost
+
+C:\xampp\apache\conf\extra - httpd-vhosts.conf
+	<VirtualHost *:80>
+		ServerName cityit.localhost
+		DocumentRoot C:/xampp/htdocs/cityit/public
+		SetEnv APPLICATION_ENV "development"
+		<Directory C:/xampp/htdocs/cityit/public>
+			DirectoryIndex index.php
+			AllowOverride All
+			Require all granted
+		</Directory>
+	</VirtualHost>
