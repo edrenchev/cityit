@@ -12,3 +12,10 @@ C:\xampp\apache\conf\extra - httpd-vhosts.conf
 			Require all granted
 		</Directory>
 	</VirtualHost>
+
+composer development-enable
+//composer development-disable
+//composer development-status
+
+Install Doctrine 2 ORM
+    composer require doctrine/doctrine-orm-module

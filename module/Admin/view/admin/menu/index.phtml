@@ -1,0 +1,11 @@
+<h1>Menu</h1>
+
+<?php foreach($menu as $item): ?>
+
+    <h3>
+        <a href="#">
+            <?= $this->escapeHtml($item->getName()); ?>
+        </a>
+    </h3>
+
+<?php endforeach; ?>
