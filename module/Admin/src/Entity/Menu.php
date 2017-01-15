@@ -31,6 +31,17 @@ class Menu {
     /**
      * @return mixed
      */
+
+    /**
+     * @ORM\OneToMany(targetEntity="\Admin\Entity\MenuLng", fetch="EAGER", mappedBy="menuId")
+     */
+    private $translations;
+
+    public function __construct() {
+        $this->translations = new ArrayCollection();
+    }
+
+
     public function getId() {
         return $this->id;
     }
@@ -55,5 +66,21 @@ class Menu {
     public function setName($name) {
         $this->name = $name;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTranslations() {
+        return $this->translations;
+    }
+
+    /**
+     * @param mixed $translations
+     */
+    public function setTranslations($translations) {
+        $this->translations = $translations;
+    }
+
+
 
 }

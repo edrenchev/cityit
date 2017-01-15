@@ -15,7 +15,23 @@ class MenuController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $menu = $this->entityManager->getRepository(Menu::class)->findAll();
+
+//        $menu = $this->entityManager->getRepository(Menu::class)->findAll();
+
+//        $stmt = $conn->prepare("SELECT * FROM menu AS m LEFT JOIN menu_lng as ml ON m.id=ml.menu_id");
+        $qb = $this->entityManager->createQueryBuilder();
+        $result = $qb->select('*')->from('\Admin\Entity\Menu', 'm')->getArrayResult();
+//            $result = $qb->select('*')
+//            ->from('menu', 'm')
+//            ->leftJoin('menu_lng', 'ml', 'm.id=ml.menu_id')
+//            ->getQuery()
+//            ->getResult();
+        echo '<pre>'.print_r($result,true).'</pre>';
+        die();
+
+
+        //TODO sled tova menu da go prevarna v asociativen masiv!!!!!
+
 
         return new ViewModel([
             'menu' => $menu

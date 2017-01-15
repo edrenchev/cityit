@@ -24,6 +24,7 @@ return [
                     'user'     => 'root',
                     'password' => '',
                     'dbname'   => 'cityit',
+                    'charset'   => 'UTF8',
                 ]
             ],
         ],
