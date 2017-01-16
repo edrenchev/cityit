@@ -24,7 +24,7 @@ class MenuController extends AbstractActionController {
 			->from(\Admin\Entity\Menu::class, 'm')
 			->leftJoin(\Admin\Entity\MenuLng::class, 'ml', \Doctrine\ORM\Query\Expr\Join::WITH, 'm.id=ml.menuId');
 //		$result = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-		$result = $queryBuilder->getQuery()->getArrayResult();
+		$result = $queryBuilder->getQuery()->getScalarResult();
 //            $result = $qb->select('*')
 //            ->from('menu', 'm')
 //            ->leftJoin('menu_lng', 'ml', 'm.id=ml.menu_id')
