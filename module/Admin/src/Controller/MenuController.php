@@ -20,17 +20,26 @@ class MenuController extends AbstractActionController {
 //        $stmt = $conn->prepare("SELECT * FROM menu AS m LEFT JOIN menu_lng as ml ON m.id=ml.menu_id");
 
 		$queryBuilder = $this->entityManager->createQueryBuilder();
-		$queryBuilder->select(array('m', 'ml'))
-			->from(\Admin\Entity\Menu::class, 'm')
-			->leftJoin(\Admin\Entity\MenuLng::class, 'ml', \Doctrine\ORM\Query\Expr\Join::WITH, 'm.id=ml.menuId');
+		$queryBuilder->select(array('t', 'tl'))
+			->from(\Admin\Entity\Menu::class, 't')
+			->leftJoin(\Admin\Entity\MenuLng::class, 'tl', \Doctrine\ORM\Query\Expr\Join::WITH, 't.id=tl.menuId');
 //		$result = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 		$result = $queryBuilder->getQuery()->getScalarResult();
+		$prepareResult = [];
+		foreach ($result as $item) {
+			$prepareResult[$item['t_id']]['id'] = $item['t_id'];
+			$prepareResult[$item['t_id']]['name'] = $item['t_name'];
+			$prepareResult[$item['t_id']]["lng_{$item['tl_lng']}"]['id'] = $item['tl_id'];
+			$prepareResult[$item['t_id']]["lng_{$item['tl_lng']}"]['menu_title'] = $item['tl_menuTitle'];
+			$prepareResult[$item['t_id']]["lng_{$item['tl_lng']}"]['page_title'] = $item['tl_pageTitle'];
+			$prepareResult[$item['t_id']]["lng_{$item['tl_lng']}"]['content_title'] = $item['tl_contentTitle'];
+		}
 //            $result = $qb->select('*')
 //            ->from('menu', 'm')
 //            ->leftJoin('menu_lng', 'ml', 'm.id=ml.menu_id')
 //            ->getQuery()
 //            ->getResult();
-		echo '<pre>' . print_r($result, true) . '</pre>';
+		echo '<pre>' . print_r($prepareResult, true) . '</pre>';
 		die();
 
 
