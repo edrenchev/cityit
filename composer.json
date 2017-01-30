@@ -32,6 +32,7 @@
     "autoload": {
         "psr-4": {
             "Application\\": "module/Application/src/",
+            "Libs\\": "module/Libs/src/",
             "Admin\\": "module/Admin/src/"
         }
     },

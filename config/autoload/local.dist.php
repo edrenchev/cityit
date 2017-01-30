@@ -12,4 +12,8 @@
  */
 
 return [
+    'languages' => [
+        'bg' => 'Bulgarian',
+        'en' => 'English',
+    ],
 ];

@@ -32,6 +32,7 @@ return [
     'Zend\Router',
     'Zend\Validator',
     'Application',
+    'Libs',
     'Admin',
     'DoctrineModule',
     'DoctrineORMModule',

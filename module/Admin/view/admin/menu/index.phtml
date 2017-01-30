@@ -1,20 +1,3 @@
 <h1>Menu</h1>
 
-<?php /*foreach($menu as $item): */ ?><!--
-
-    <h3>
-        <a href="#">
-            <? /*= $this->escapeHtml($item->getName()); */ ?>
-        </a>
-    </h3>
-
---><?php /*endforeach; */ ?>
-
-<?php
-
-foreach ($menu as $item) {
-    echo '<h3>' . $item->getId() . ' '.$item->getName().'</h3>';
-    foreach ($item->getTranslations() as $translation) {
-        echo '<p>' . $translation->getId() . ' '/*.$translation->getMenuId().' '*/.$translation->getMenuTitle().' '.$translation->getPageTitle().' '.$translation->getContentTitle().'</p>';
-    }
-}
+<?= $listTable->getListTable() ?>

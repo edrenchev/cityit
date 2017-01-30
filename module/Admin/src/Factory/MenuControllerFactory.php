@@ -17,8 +17,9 @@ class MenuControllerFactory {
     public function __invoke(ContainerInterface $container,
                              $requestedName, array $options = null) {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
+        $config = $container->get('config');
 
         // Instantiate the controller and inject dependencies
-        return new MenuController($entityManager);
+        return new MenuController($entityManager, $config['site_config']);
     }
 }
