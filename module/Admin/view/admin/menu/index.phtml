@@ -1,3 +1,6 @@
 <h1>Menu</h1>
 
-<?= $listTable->getListTable() ?>
+<form action="" method="POST">
+	<?= $listTable->getListTable($this->url('home',['action'=>'edit'])) ?>
+</form>
+

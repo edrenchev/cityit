@@ -18,7 +18,6 @@ class MenuController extends AbstractActionController {
 
 	public function indexAction() {
 
-
 //        $menu = $this->entityManager->getRepository(Menu::class)->findAll();
 
 //        $stmt = $conn->prepare("SELECT * FROM menu AS m LEFT JOIN menu_lng as ml ON m.id=ml.menu_id");
@@ -60,7 +59,7 @@ class MenuController extends AbstractActionController {
 			'lng_bg.content_title' => 'Content Title (bg)',
 		];
 
-		$listTable = new ListTable($thead, $result, '', '', '');
+		$listTable = new ListTable($thead, $result, 'home', '', '');
 
 		return new ViewModel([
 			'listTable' => $listTable
