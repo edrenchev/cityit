@@ -1,33 +1,11 @@
 <h1>Menu</h1>
 
+<style>
+    th, td {
+        padding: 5px 10px;
+    }
+</style>
+
 <form action="" method="POST">
-	<?= $listTable->getListTable($this->url('home',['action'=>'edit'])) ?>
+    <?= $listTable->getListTable($this->url('home', ['action' => 'edit'])) ?>
 </form>
-
-<script>
-	$(document).ready(function(){
-		$('th[data-order-column]').each(function(){
-			var th=$(this);
-			if(th.attr('data-order-column')=='ASC'){
-				th.append(' <sup>▲'+th.attr('data-order-position')+'</sup>');
-			} else {
-				th.append(' <sup>▼'+th.attr('data-order-position')+'</sup>');
-			}
-		});
-	});
-
-	$('th[data-order-column]').on('click', function(event){
-
-		var th = $(this);
-		var val = th.attr('data-order-column');
-
-		if(th.attr('data-order-column')==undefined) val = val+' ASC';
-		if(th.attr('data-order-column')=='ASC') val = val+' DESC';
-
-		if(event.ctrlKey) {
-
-		} else {
-
-		}
-	});
-</script>

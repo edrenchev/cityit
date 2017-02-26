@@ -8,7 +8,7 @@
 
 return [
 	'site_config' => [
-		'bg' => 'Bulgarian',
-		'en' => 'English',
+		'bg_BG' => 'Bulgarian',
+		'en_GB' => 'English',
 	],
 ];

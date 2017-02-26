@@ -5,76 +5,99 @@ use Libs\Admin\ListTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Admin\Entity\Menu;
+use Zend\Session\Container;
 
 class MenuController extends AbstractActionController {
 
-	private $entityManager;
-	private $siteConfig;
+    private $entityManager;
+    private $siteConfig;
 
-	public function __construct($entityManager, $siteConfig) {
-		$this->entityManager = $entityManager;
-		$this->siteConfig = $siteConfig;
-	}
+    /**
+     * Session container.
+     * @var Zend\Session\Container
+     */
+    private $sessionContainer;
 
-	public function indexAction() {
+    public function __construct($entityManager, $siteConfig, $sessionContainer) {
+        $this->entityManager = $entityManager;
+        $this->siteConfig = $siteConfig;
+        $this->sessionContainer = $sessionContainer;
+    }
 
-//        $menu = $this->entityManager->getRepository(Menu::class)->findAll();
+    public function indexAction() {
 
-//        $stmt = $conn->prepare("SELECT * FROM menu AS m LEFT JOIN menu_lng as ml ON m.id=ml.menu_id");
+        $order = [];
+        if ($this->getRequest()->isPost()) {
+            // Fill in the form with POST data
+            $data = $this->params()->fromPost();
+            if (isset($data['do'])) {
+                $action = $data['do'];
+                if (isset($action['order'])) {
+                    $orderData = $action['order'];
 
-		$queryBuilder = $this->entityManager->createQueryBuilder();
-		$queryBuilder->select(array('t', 'tl'))
-			->from(\Admin\Entity\Menu::class, 't')
-			->leftJoin(\Admin\Entity\MenuLng::class, 'tl', \Doctrine\ORM\Query\Expr\Join::WITH, 't.id=tl.menuId');
-//		$result = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-		$result = $queryBuilder->getQuery()->getScalarResult();
+                    $filterData = [];
+                    if (isset($this->sessionContainer->menuIndexFilterData)) {
+                        $filterData = $this->sessionContainer->menuIndexFilterData;
+                    }
 
-		/*$prepareResult = [];
-		foreach ($result as $item) {
-			$prepareResult[$item['t_id']]['id'] = $item['t_id'];
-			$prepareResult[$item['t_id']]['name'] = $item['t_name'];
-			$prepareResult[$item['t_id']]["lng_{$item['tl_lng']}"]['id'] = $item['tl_id'];
-			$prepareResult[$item['t_id']]["lng_{$item['tl_lng']}"]['menu_title'] = $item['tl_menuTitle'];
-			$prepareResult[$item['t_id']]["lng_{$item['tl_lng']}"]['page_title'] = $item['tl_pageTitle'];
-			$prepareResult[$item['t_id']]["lng_{$item['tl_lng']}"]['content_title'] = $item['tl_contentTitle'];
-		}*/
-//            $result = $qb->select('*')
-//            ->from('menu', 'm')
-//            ->leftJoin('menu_lng', 'ml', 'm.id=ml.menu_id')
-//            ->getQuery()
-//            ->getResult();
+                    list($column, $order) = explode(' ', $orderData, 2);
 
+                    if(empty($order)) {
+                         unset($filterData['orders'][$column]);
+                    } else {
+                        $filterData['orders'][$column] = $order;
+                    }
 
-		//TODO doctrine 2 partial!!!!!
-		//TODO sled tova menu da go prevarna v asociativen masiv!!!!!
+                    $this->sessionContainer->menuIndexFilterData = $filterData;
 
-		$thead = [
-			'id' => 'Id',
-			'name' => 'Name',
-			'lng_en.menu_title' => 'Menu Title (en)',
-			'lng_bg.menu_title' => 'Menu Title (bg)',
-			'lng_en.page_title' => 'Page Title (en)',
-			'lng_bg.page_title' => 'Page Title (bg)',
-			'lng_en.content_title' => 'Content Title (en)',
-			'lng_bg.content_title' => 'Content Title (bg)',
-		];
+//					unset($this->sessionContainer->menuIndexFilterData);
 
-		$listTable = new ListTable($thead, $result, 'home', '', '');
+                }
+            }
+        }
 
-		return new ViewModel([
-			'listTable' => $listTable
-		]);
-	}
+        echo '<pre>'.print_r($this->sessionContainer->menuIndexFilterData,true).'</pre>';
+//        die();
+        $filterData = [];
+        if (isset($this->sessionContainer->menuIndexFilterData)) {
+            $filterData = $this->sessionContainer->menuIndexFilterData;
+        }
+        $result = $this->entityManager->getRepository(Menu::class)->getMenus($filterData);
+        $result = $result->getScalarResult();
 
-	public function addAction() {
-		return new ViewModel();
-	}
+        //TODO doctrine 2 partial!!!!!
+        //TODO sled tova menu da go prevarna v asociativen masiv!!!!!
 
-	public function editAction() {
-		return new ViewModel();
-	}
+        $thead = [
+            'menu_id' => 'Id',
+            'menu_name' => 'Name',
+            'en_GB_menuTitle' => 'Menu Title (en)',
+            'bg_BG_menuTitle' => 'Menu Title (bg)',
+            'en_GB_pageTitle' => 'Page Title (en)',
+            'bg_BG_pageTitle' => 'Page Title (bg)',
+            'en_GB_contentTitle' => 'Content Title (en)',
+            'bg_BG_contentTitle' => 'Content Title (bg)',
+        ];
 
-	public function deleteAction() {
-		return new ViewModel();
-	}
+//        var_dump($this->sessionContainer->menuIndex = $filterData);
+
+        $orders = '';
+        $listTable = new ListTable($thead, $this->sessionContainer->menuIndexFilterData['orders'], $result, 'home', '', '');
+
+        return new ViewModel([
+            'listTable' => $listTable
+        ]);
+    }
+
+    public function addAction() {
+        return new ViewModel();
+    }
+
+    public function editAction() {
+        return new ViewModel();
+    }
+
+    public function deleteAction() {
+        return new ViewModel();
+    }
 }

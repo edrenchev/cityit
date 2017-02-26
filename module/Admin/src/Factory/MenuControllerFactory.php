@@ -19,7 +19,10 @@ class MenuControllerFactory {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
         $config = $container->get('config');
 
+        // The $container variable is the service manager.
+        $sessionContainer = $container->get('Admin');
+
         // Instantiate the controller and inject dependencies
-        return new MenuController($entityManager, $config['site_config']);
+        return new MenuController($entityManager, $config['site_config'], $sessionContainer);
     }
 }

@@ -11,91 +11,82 @@ namespace Libs\Admin;
 
 class ListTable {
 
-	private $head;
-	private $basicUrl;
-	private $data;
-	private $currPage;
-	private $totalPage;
-	private $itemPerPage;
-	private $itemsPerPage;
-	private $languages;
+    private $head;
+    private $basicUrl;
+    private $data;
+    private $currPage;
+    private $totalPage;
+    private $itemPerPage;
+    private $itemsPerPage;
+    private $languages;
+    private $orders;
 
-	public function __construct($head, $data, $routeName, $currPage, $totalPage, $itemPerPage = 25) {
+    public function __construct($head, $orders, $data, $routeName, $currPage, $totalPage, $itemPerPage = 25) {
 
-		$this->head = $head;
-		$this->data = $data;
-		$this->routeName = $routeName;
-		$this->currPage = $currPage;
-		$this->totalPage = $totalPage;
-		$this->itemPerPage = $itemPerPage;
-		$this->languages = [];
+        $this->head = $head;
+        $this->data = $data;
+        $this->routeName = $routeName;
+        $this->currPage = $currPage;
+        $this->totalPage = $totalPage;
+        $this->itemPerPage = $itemPerPage;
+        $this->languages = [];
+        $this->orders = $orders;
 
-		$this->itemsPerPage = [
-			5 => 5,
-			10 => 10,
-			25 => 25,
-			50 => 50,
-			100 => 100,
-			200 => 200,
-			500 => 500,
-			1000 => 1000,
-		];
+        $this->itemsPerPage = [
+            5 => 5,
+            10 => 10,
+            25 => 25,
+            50 => 50,
+            100 => 100,
+            200 => 200,
+            500 => 500,
+            1000 => 1000,
+        ];
 
-	}
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getLanguages() {
-		return $this->languages;
-	}
+    /**
+     * @return array
+     */
+    public function getLanguages() {
+        return $this->languages;
+    }
 
-	/**
-	 * @param array $languages
-	 */
-	public function setLanguages(array $languages) {
-		$this->languages = $languages;
-	}
+    /**
+     * @param array $languages
+     */
+    public function setLanguages(array $languages) {
+        $this->languages = $languages;
+    }
 
-	public function prepareData($data) {
-		$prepareData = [];
-		foreach ($data as $item) {
-			$prepareData[$item['t_id']]['id'] = $item['t_id'];
-			$prepareData[$item['t_id']]['name'] = $item['t_name'];
-			$prepareData[$item['t_id']]["lng_{$item['tl_lng']}.id"] = $item['tl_id'];
-			$prepareData[$item['t_id']]["lng_{$item['tl_lng']}.menu_title"] = $item['tl_menuTitle'];
-			$prepareData[$item['t_id']]["lng_{$item['tl_lng']}.page_title"] = $item['tl_pageTitle'];
-			$prepareData[$item['t_id']]["lng_{$item['tl_lng']}.content_title"] = $item['tl_contentTitle'];
-		}
-		return $prepareData;
-	}
-
-
-	public function getListTable($editLink) {
-		$keys = array_keys($this->head);
-		$tHead = '<th>Edit</th>';
-		foreach ($keys as $key) {
-			$tHead .= <<<EOD
-<th data-order-column="{$key}">{$this->head[$key]}</th>
+    public function getListTable($editLink) {
+        $keys = array_keys($this->head);
+        $tHead = '<th>Edit</th>';
+        foreach ($keys as $key) {
+            $order = '';
+            if(isset($this->orders[$key])) {
+                $order = $this->orders[$key];
+            }
+            $tHead .= <<<EOD
+<th data-order-column="{$key}" data-order="{$order}">{$this->head[$key]}</th>
 EOD;
-		}
-		$tHead = "<tr>{$tHead}</tr>";
+        }
+        $tHead = "<tr>{$tHead}</tr>";
 
-		$tBody = '';
-		$data = $this->prepareData($this->data);
-		foreach ($data as $item) {
-			$tBody .= '<tr>';
-			$tBody .= '<td><a href="' . $editLink . '/' . $item['id'] . '">Edit</a></td>';
-			foreach ($keys as $key) {
-				$value = htmlspecialchars($item[$key]);
-				$tBody .= <<<EOD
+        $tBody = '';
+        foreach ($this->data as $item) {
+            $tBody .= '<tr>';
+            $tBody .= '<td><a href="' . $editLink . '/' . $item['menu_id'] . '">Edit</a></td>';
+            foreach ($keys as $key) {
+                $value = htmlspecialchars($item[$key]);
+                $tBody .= <<<EOD
 <td>{$value}</td>
 EOD;
-			}
-			$tBody .= '</tr>';
-		}
+            }
+            $tBody .= '</tr>';
+        }
 
-		return <<<EOD
+        return <<<EOD
     <table class="AdminListTable">
         <thead>
             {$tHead}
@@ -107,6 +98,6 @@ EOD;
 EOD;
 
 
-	}
+    }
 
 }

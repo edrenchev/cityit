@@ -11,7 +11,7 @@ namespace Admin\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="\Admin\Repository\MenuRepository")
  * @ORM\Table(name="menu")
  */
 class Menu {
