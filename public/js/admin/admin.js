@@ -21,9 +21,9 @@ $(document).ready(function () {
     $('th[data-order-column]').each(function () {
         var th = $(this);
         if (th.attr('data-order') == 'ASC') {
-            th.append(' <sup>▲ </sup>');
+            th.append(' <sup>▲' + th.attr('data-order-position') + '</sup>');
         } else if (th.attr('data-order') == 'DESC') {
-            th.append(' <sup>▼</sup>');
+            th.append(' <sup>▼' + th.attr('data-order-position') + '</sup>');
         }
     });
 
@@ -38,7 +38,7 @@ $(document).ready(function () {
         if (th.attr('data-order') == 'DESC') val = val + ' ';
 
         if (event.ctrlKey) {
-
+            doAction(this, 'addOrder', val);
         } else {
             doAction(this, 'order', val);
         }

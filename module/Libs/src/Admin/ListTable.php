@@ -60,15 +60,19 @@ class ListTable {
     }
 
     public function getListTable($editLink) {
+        $orderCnt = 0;
         $keys = array_keys($this->head);
         $tHead = '<th>Edit</th>';
         foreach ($keys as $key) {
             $order = '';
+            $orderPosition = '';
             if(isset($this->orders[$key])) {
                 $order = $this->orders[$key];
+                $orderCnt += 1;
+                $orderPosition = " data-order-position='{$orderCnt}'";
             }
             $tHead .= <<<EOD
-<th data-order-column="{$key}" data-order="{$order}">{$this->head[$key]}</th>
+<th data-order-column="{$key}" data-order="{$order}"{$orderPosition}>{$this->head[$key]}</th>
 EOD;
         }
         $tHead = "<tr>{$tHead}</tr>";

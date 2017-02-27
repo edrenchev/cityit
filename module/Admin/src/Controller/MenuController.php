@@ -26,7 +26,6 @@ class MenuController extends AbstractActionController {
 
     public function indexAction() {
 
-        $order = [];
         if ($this->getRequest()->isPost()) {
             // Fill in the form with POST data
             $data = $this->params()->fromPost();
@@ -43,8 +42,9 @@ class MenuController extends AbstractActionController {
                     list($column, $order) = explode(' ', $orderData, 2);
 
                     if(empty($order)) {
-                         unset($filterData['orders'][$column]);
+                        unset($filterData['orders'][$column]);
                     } else {
+                        $filterData['orders'] = [];
                         $filterData['orders'][$column] = $order;
                     }
 
@@ -52,6 +52,23 @@ class MenuController extends AbstractActionController {
 
 //					unset($this->sessionContainer->menuIndexFilterData);
 
+                } elseif(isset($action['addOrder'])) {
+                    $orderData = $action['addOrder'];
+
+                    $filterData = [];
+                    if (isset($this->sessionContainer->menuIndexFilterData)) {
+                        $filterData = $this->sessionContainer->menuIndexFilterData;
+                    }
+
+                    list($column, $order) = explode(' ', $orderData, 2);
+
+                    if(empty($order)) {
+                        $filterData['orders'][$column] = 'ASC';
+                    } else {
+                        $filterData['orders'][$column] = $order;
+                    }
+
+                    $this->sessionContainer->menuIndexFilterData = $filterData;
                 }
             }
         }
