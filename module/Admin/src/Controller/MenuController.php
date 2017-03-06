@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Admin\Entity\Menu;
 use Zend\Session\Container;
+use Admin\Form\SearchForm;
 
 class MenuController extends AbstractActionController {
 
@@ -26,6 +27,37 @@ class MenuController extends AbstractActionController {
 
     public function indexAction() {
 
+        $searchModel = [
+            'menu_id' => [
+                'label' => 'Menu Id',
+                'field' => 'menu.id',
+                'comparison' => 'eq',
+            ],
+            'menu_name' => [
+                'label' => 'Menu Name',
+                'field' => 'menu.name',
+                'comparison' => 'eq',
+            ],
+            'menu_is_active' => [
+                'label' => 'Is Active',
+                'field' => 'menu.isActive',
+                'comparison' => 'eq',
+                'options' => [0 => 'No', 1 => 'Yes'],
+            ],
+            'menu_create_date_from' => [
+                'label' => 'Create From',
+                'field' => 'menu.createFrom',
+                'comparison' => 'ge',
+            ],
+            'menu_create_date_to' => [
+                'label' => 'Create To',
+                'field' => 'menu.createFrom',
+                'comparison' => 'le',
+            ],
+        ];
+
+        $searchForm = new SearchForm($searchModel);
+
         if ($this->getRequest()->isPost()) {
             // Fill in the form with POST data
             $data = $this->params()->fromPost();
@@ -41,7 +73,7 @@ class MenuController extends AbstractActionController {
 
                     list($column, $order) = explode(' ', $orderData, 2);
 
-                    if(empty($order)) {
+                    if (empty($order)) {
                         unset($filterData['orders'][$column]);
                     } else {
                         $filterData['orders'] = [];
@@ -50,9 +82,7 @@ class MenuController extends AbstractActionController {
 
                     $this->sessionContainer->menuIndexFilterData = $filterData;
 
-//					unset($this->sessionContainer->menuIndexFilterData);
-
-                } elseif(isset($action['addOrder'])) {
+                } elseif (isset($action['addOrder'])) {
                     $orderData = $action['addOrder'];
 
                     $filterData = [];
@@ -62,7 +92,7 @@ class MenuController extends AbstractActionController {
 
                     list($column, $order) = explode(' ', $orderData, 2);
 
-                    if(empty($order)) {
+                    if (empty($order)) {
                         $filterData['orders'][$column] = 'ASC';
                     } else {
                         $filterData['orders'][$column] = $order;
@@ -70,24 +100,49 @@ class MenuController extends AbstractActionController {
 
                     $this->sessionContainer->menuIndexFilterData = $filterData;
                 }
+            } else {
+
+                $data = $this->params()->fromPost();
+
+                $filterData = [];
+                if (isset($this->sessionContainer->menuIndexFilterData)) {
+                    $filterData = $this->sessionContainer->menuIndexFilterData;
+                }
+
+                if (isset($data['submit']) && $data['submit'] == 'Search') {
+                    $filterData['filter'] = $data;
+                } elseif (isset($data['clear']) && $data['clear'] == 'Clear') {
+                    $filterData['filter'] = [];
+                    $data = [];
+                }
+                $searchForm->setData($data);
+                $this->sessionContainer->menuIndexFilterData = $filterData;
+
+            }
+        } else {
+            if (!empty($this->sessionContainer->menuIndexFilterData['filter'])) {
+                $searchForm->setData($this->sessionContainer->menuIndexFilterData['filter']);
             }
         }
 
-        echo '<pre>'.print_r($this->sessionContainer->menuIndexFilterData,true).'</pre>';
-//        die();
         $filterData = [];
         if (isset($this->sessionContainer->menuIndexFilterData)) {
             $filterData = $this->sessionContainer->menuIndexFilterData;
         }
-        $result = $this->entityManager->getRepository(Menu::class)->getMenus($filterData);
+
+        echo '<pre>' . print_r($filterData, true) . '</pre>';
+
+        $result = $this->entityManager->getRepository(Menu::class)->getMenus($filterData, $searchModel);
         $result = $result->getScalarResult();
 
         //TODO doctrine 2 partial!!!!!
         //TODO sled tova menu da go prevarna v asociativen masiv!!!!!
 
+
         $thead = [
             'menu_id' => 'Id',
             'menu_name' => 'Name',
+            'menu_isActive' => 'Is Active',
             'en_GB_menuTitle' => 'Menu Title (en)',
             'bg_BG_menuTitle' => 'Menu Title (bg)',
             'en_GB_pageTitle' => 'Page Title (en)',
@@ -96,13 +151,17 @@ class MenuController extends AbstractActionController {
             'bg_BG_contentTitle' => 'Content Title (bg)',
         ];
 
-//        var_dump($this->sessionContainer->menuIndex = $filterData);
+        $orders = [];
+        if (isset($this->sessionContainer->menuIndexFilterData['orders'])) {
+            $orders = $this->sessionContainer->menuIndexFilterData['orders'];
+        }
 
-        $orders = '';
-        $listTable = new ListTable($thead, $this->sessionContainer->menuIndexFilterData['orders'], $result, 'home', '', '');
+        $listTable = new ListTable($thead, $orders, $result, 'home', '', '');
 
         return new ViewModel([
-            'listTable' => $listTable
+            'listTable' => $listTable,
+            'searchForm' => $searchForm,
+            'searchModel' => $searchModel,
         ]);
     }
 

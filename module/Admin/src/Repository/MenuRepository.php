@@ -7,7 +7,7 @@ use Admin\Entity\Menu;
 
 class MenuRepository extends EntityRepository {
 
-    public function getMenus($filterData) {
+    public function getMenus($filterData, $searchModel = []) {
         $entityManager = $this->getEntityManager();
 
         $queryBuilder = $entityManager->createQueryBuilder();
@@ -18,9 +18,27 @@ class MenuRepository extends EntityRepository {
             ->leftJoin(\Admin\Entity\MenuLng::class, 'bg_BG', \Doctrine\ORM\Query\Expr\Join::WITH, "menu.id=bg_BG.menuId AND bg_BG.lng='bg_BG'");
 //		$result = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
-        if(!empty($filterData['orders'])) {
-            foreach($filterData['orders'] as $column=>$order) {
-                if($order == '') continue;
+        if (!empty($searchModel)) {
+            $queryBuilder->where('1=1');
+            foreach ($searchModel as $key => $item) {
+                if(isset($filterData['filter'][$key]) && $filterData['filter'][$key] !== '') {
+                    if($item['comparison'] == 'eq') {
+                        $queryBuilder->andWhere("{$item['field']} = :{$key}");
+                        $queryBuilder->setParameter($key, $filterData['filter'][$key]);
+                    } elseif($item['comparison'] == 'ge') {
+                        $queryBuilder->andWhere("{$item['field']} >= :{$key}");
+                        $queryBuilder->setParameter($key, $filterData['filter'][$key]);
+                    } elseif($item['comparison'] == 'le') {
+                        $queryBuilder->andWhere("{$item['field']} <= :{$key}");
+                        $queryBuilder->setParameter($key, $filterData['filter'][$key]);
+                    }
+                }
+            }
+        }
+
+        if (!empty($filterData['orders'])) {
+            foreach ($filterData['orders'] as $column => $order) {
+                if ($order == '') continue;
                 $tmpPos = strrpos($column, '_');
                 $table = substr($column, 0, $tmpPos);
                 $column = substr($column, $tmpPos + 1);
@@ -30,7 +48,8 @@ class MenuRepository extends EntityRepository {
 
 
         $result = $queryBuilder->getQuery();
-        var_dump($result->getSql());
+
+//        var_dump($result->getSql());
         return $result;
     }
 

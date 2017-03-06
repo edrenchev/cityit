@@ -29,6 +29,11 @@ class Menu {
     protected $name;
 
     /**
+     * @ORM\Column(name="is_active")
+     */
+    protected $isActive;
+
+    /**
      * @return mixed
      */
 
@@ -65,6 +70,20 @@ class Menu {
      */
     public function setName($name) {
         $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsActive() {
+        return $this->isActive;
+    }
+
+    /**
+     * @param mixed $isActive
+     */
+    public function setIsActive($isActive) {
+        $this->isActive = $isActive;
     }
 
     /**

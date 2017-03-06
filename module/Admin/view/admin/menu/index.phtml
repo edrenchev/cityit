@@ -6,6 +6,22 @@
     }
 </style>
 
+<?php
+
+    if(!empty($searchModel)) {
+//        $searchForm->prepare();
+        echo $this->form()->openTag($searchForm);
+        foreach($searchModel as $key => $item) {
+            echo $this->formLabel($searchForm->get($key));
+            echo $this->formElement($searchForm->get($key));
+        }
+
+        echo $this->formElement($searchForm->get('submit'));
+        echo $this->formElement($searchForm->get('clear'));
+        echo $this->form()->closeTag();
+    }
+?>
+
 <form action="" method="POST">
     <?= $listTable->getListTable($this->url('home', ['action' => 'edit'])) ?>
 </form>

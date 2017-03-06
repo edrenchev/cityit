@@ -21,7 +21,7 @@ class ListTable {
     private $languages;
     private $orders;
 
-    public function __construct($head, $orders, $data, $routeName, $currPage, $totalPage, $itemPerPage = 25) {
+    public function __construct($head, $orders=[], $data, $routeName, $currPage, $totalPage, $itemPerPage = 25) {
 
         $this->head = $head;
         $this->data = $data;
@@ -78,16 +78,18 @@ EOD;
         $tHead = "<tr>{$tHead}</tr>";
 
         $tBody = '';
-        foreach ($this->data as $item) {
-            $tBody .= '<tr>';
-            $tBody .= '<td><a href="' . $editLink . '/' . $item['menu_id'] . '">Edit</a></td>';
-            foreach ($keys as $key) {
-                $value = htmlspecialchars($item[$key]);
-                $tBody .= <<<EOD
+        if(!empty($this->data)) {
+            foreach ($this->data as $item) {
+                $tBody .= '<tr>';
+                $tBody .= '<td><a href="' . $editLink . '/' . $item['menu_id'] . '">Edit</a></td>';
+                foreach ($keys as $key) {
+                    $value = htmlspecialchars($item[$key]);
+                    $tBody .= <<<EOD
 <td>{$value}</td>
 EOD;
+                }
+                $tBody .= '</tr>';
             }
-            $tBody .= '</tr>';
         }
 
         return <<<EOD
