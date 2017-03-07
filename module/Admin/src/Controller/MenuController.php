@@ -1,8 +1,10 @@
 <?php
 namespace Admin\Controller;
 
+use Admin\Paginator\Adapter;
 use Libs\Admin\ListTable;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Paginator\Paginator;
 use Zend\View\Model\ViewModel;
 use Admin\Entity\Menu;
 use Zend\Session\Container;
@@ -132,8 +134,8 @@ class MenuController extends AbstractActionController {
 
         echo '<pre>' . print_r($filterData, true) . '</pre>';
 
-        $result = $this->entityManager->getRepository(Menu::class)->getMenus($filterData, $searchModel);
-        $result = $result->getScalarResult();
+//        $result = $this->entityManager->getRepository(Menu::class)->getMenus($filterData, $searchModel);
+//        $result = $result->getScalarResult();
 
         //TODO doctrine 2 partial!!!!!
         //TODO sled tova menu da go prevarna v asociativen masiv!!!!!
@@ -156,12 +158,21 @@ class MenuController extends AbstractActionController {
             $orders = $this->sessionContainer->menuIndexFilterData['orders'];
         }
 
-        $listTable = new ListTable($thead, $orders, $result, 'home', '', '');
+        $repo = $this->entityManager->getRepository(Menu::class);
+        $adapter = new Adapter($repo, $filterData, $searchModel);
+        $paginator = new Paginator($adapter);
+        $page = $this->params()->fromQuery('page', 1);
+        $paginator->setCurrentPageNumber($page)->setItemCountPerPage(1);
+
+
+//        $listTable = new ListTable($thead, $orders, $result, 'home', '', '');
+        $listTable = new ListTable($thead, $orders, $paginator, 'home', '', '');
 
         return new ViewModel([
             'listTable' => $listTable,
             'searchForm' => $searchForm,
             'searchModel' => $searchModel,
+            'paginator' => $paginator,
         ]);
     }
 
