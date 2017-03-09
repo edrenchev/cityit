@@ -11,6 +11,7 @@ namespace Libs\Admin;
 
 class ListTable {
 
+    private $model;
     private $head;
     private $basicUrl;
     private $data;
@@ -20,17 +21,20 @@ class ListTable {
     private $itemsPerPage;
     private $languages;
     private $orders;
+    private $orderCnt;
 
-    public function __construct($head, $orders=[], $data, $routeName, $currPage, $totalPage, $itemPerPage = 25) {
+    public function __construct($model, $head, $orders = [], $data, $languages, $routeName, $currPage, $totalPage, $itemPerPage = 25) {
 
+        $this->model = $model;
         $this->head = $head;
         $this->data = $data;
         $this->routeName = $routeName;
         $this->currPage = $currPage;
         $this->totalPage = $totalPage;
         $this->itemPerPage = $itemPerPage;
-        $this->languages = [];
+        $this->setLanguages($languages);
         $this->orders = $orders;
+        $this->orderCnt = 0;
 
         $this->itemsPerPage = [
             5 => 5,
@@ -59,34 +63,64 @@ class ListTable {
         $this->languages = $languages;
     }
 
+    private function renderTh($key, $lng = '') {
+        if ($lng == '') {
+            $formatKey = "t_{$key}";
+        } else {
+            $formatKey = "{$lng}_{$key}";
+            $key = "*.{$key}";
+        }
+        $order = '';
+        $orderPosition = '';
+        if (isset($this->orders[$formatKey])) {
+            $order = $this->orders[$formatKey];
+            $this->orderCnt += 1;
+            $orderPosition = " data-order-position='{$this->orderCnt}'";
+        }
+        return <<<EOD
+<th data-order-column="{$formatKey}" data-order="{$order}"{$orderPosition}>{$this->model[$key]['title']} {$lng}</th>
+EOD;
+    }
+
+    private function renderTd($item, $key, $lng = '') {
+        if ($lng == '') {
+            $key = "t_{$key}";
+        } else {
+            $key = "{$lng}_{$key}";
+        }
+        $value = htmlspecialchars($item[$key]);
+        return "<td>{$value}</td>";
+    }
+
     public function getListTable($editLink) {
-        $orderCnt = 0;
-        $keys = array_keys($this->head);
+        $keys = $this->head;
         $tHead = '<th>Edit</th>';
         foreach ($keys as $key) {
-            $order = '';
-            $orderPosition = '';
-            if(isset($this->orders[$key])) {
-                $order = $this->orders[$key];
-                $orderCnt += 1;
-                $orderPosition = " data-order-position='{$orderCnt}'";
+            if (strpos($key, '*.') !== false) {
+                $tmpKey = substr($key, 2);
+                foreach (array_keys($this->languages) as $lng) {
+                    $tHead .= $this->renderTh($tmpKey, $lng);
+                }
+            } else {
+                $tHead .= $this->renderTh($key);
             }
-            $tHead .= <<<EOD
-<th data-order-column="{$key}" data-order="{$order}"{$orderPosition}>{$this->head[$key]}</th>
-EOD;
         }
         $tHead = "<tr>{$tHead}</tr>";
 
         $tBody = '';
-        if(!empty($this->data)) {
+        if (!empty($this->data)) {
             foreach ($this->data as $item) {
                 $tBody .= '<tr>';
-                $tBody .= '<td><a href="' . $editLink . '/' . $item['menu_id'] . '">Edit</a></td>';
+                $tBody .= '<td><a href="' . $editLink . '/' . $item['t_id'] . '">Edit</a></td>';
                 foreach ($keys as $key) {
-                    $value = htmlspecialchars($item[$key]);
-                    $tBody .= <<<EOD
-<td>{$value}</td>
-EOD;
+                    if (strpos($key, '*.') !== false) {
+                        $tmpKey = substr($key, 2);
+                        foreach (array_keys($this->languages) as $lng) {
+                            $tBody .= $this->renderTd($item, $tmpKey, $lng);
+                        }
+                    } else {
+                        $tBody .= $this->renderTd($item, $key);
+                    }
                 }
                 $tBody .= '</tr>';
             }

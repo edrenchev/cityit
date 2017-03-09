@@ -1,0 +1,46 @@
+<?php
+
+$tr = [];
+if (!empty($this->searchList)) {
+    foreach ($this->searchList as $key => $field) {
+        $td = [];
+        if (is_array($field)) {
+            if (strpos($key, '*.') !== false) {
+                $tmpField = substr($key, 2);
+                foreach (array_keys($this->languages) as $lng) {
+                    $td = [];
+                    $td[] = '<td>' . $this->formLabel($this->searchForm->get("{$lng}_{$tmpField}")) . '</td>';
+                    $td[] = '<td>' . $this->formElement($this->searchForm->get("{$lng}_{$tmpField}")) . '</td>';
+                    $tr[] = implode('', $td);
+                }
+                continue;
+            } else {
+                $tmpField = "t_{$key}";
+                $td[] = '<td>' . $this->formLabel($this->searchForm->get($tmpField)) . '</td>';
+                $td[] = '<td>' . $this->formElement($this->searchForm->get($tmpField)) . '</td>';
+            }
+        } else {
+            if (strpos($field, '*.') !== false) {
+                $tmpField = substr($field, 2);
+                foreach (array_keys($this->languages) as $lng) {
+                    $td = [];
+                    $td[] = '<td>' . $this->formLabel($this->searchForm->get("{$lng}_{$tmpField}")) . '</td>';
+                    $td[] = '<td>' . $this->formElement($this->searchForm->get("{$lng}_{$tmpField}")) . '</td>';
+                    $tr[] = implode('', $td);
+                }
+                continue;
+            } else {
+                $tmpField = "t_{$field}";
+                $td[] = '<td>' . $this->formLabel($this->searchForm->get($tmpField)) . '</td>';
+                $td[] = '<td>' . $this->formElement($this->searchForm->get($tmpField)) . '</td>';
+            }
+        }
+        $tr[] = implode('', $td);
+    }
+
+    echo $this->form()->openTag($this->searchForm);
+    echo '<table><tr>' . implode('</tr><tr>', $tr) . '</tr></table>';
+    echo $this->formElement($this->searchForm->get('submit'));
+    echo $this->formElement($this->searchForm->get('clear'));
+    echo $this->form()->closeTag();
+}

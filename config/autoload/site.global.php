@@ -7,8 +7,10 @@
  */
 
 return [
-	'site_config' => [
-		'bg_BG' => 'Bulgarian',
-		'en_GB' => 'English',
-	],
+    'site_config' => [
+        'languages' => [
+            'bg_BG' => 'Bulgarian',
+            'en_GB' => 'English',
+        ],
+    ],
 ];

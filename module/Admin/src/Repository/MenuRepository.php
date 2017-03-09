@@ -12,10 +12,10 @@ class MenuRepository extends EntityRepository {
         $entityManager = $this->getEntityManager();
         $queryBuilder = $entityManager->createQueryBuilder();
 
-        $queryBuilder->select('COUNT(menu.id) as cnt')
-            ->from(\Admin\Entity\Menu::class, 'menu')
-            ->leftJoin(\Admin\Entity\MenuLng::class, 'en_GB', \Doctrine\ORM\Query\Expr\Join::WITH, "menu.id=en_GB.menuId AND en_GB.lng='en_GB'")
-            ->leftJoin(\Admin\Entity\MenuLng::class, 'bg_BG', \Doctrine\ORM\Query\Expr\Join::WITH, "menu.id=bg_BG.menuId AND bg_BG.lng='bg_BG'");
+        $queryBuilder->select('COUNT(t.id) as cnt')
+            ->from(\Admin\Entity\Menu::class, 't')
+            ->leftJoin(\Admin\Entity\MenuLng::class, 'en_GB', \Doctrine\ORM\Query\Expr\Join::WITH, "t.id=en_GB.menuId AND en_GB.lng='en_GB'")
+            ->leftJoin(\Admin\Entity\MenuLng::class, 'bg_BG', \Doctrine\ORM\Query\Expr\Join::WITH, "t.id=bg_BG.menuId AND bg_BG.lng='bg_BG'");
 
         if (!empty($searchModel)) {
             $queryBuilder->where('1=1');
@@ -40,22 +40,22 @@ class MenuRepository extends EntityRepository {
         return $result;
     }
 
-    public function getItems($offset, $itemCountPerPage, $filterData, $searchModel = []) {
-        $queryBuilder = $this->getMenus($filterData, $searchModel);
+    public function getItems($offset, $itemCountPerPage, $filterData, $model, $searchModel = []) {
+        $queryBuilder = $this->getMenus($filterData, $model, $searchModel);
         $queryBuilder->setFirstResult($offset)->setMaxResults($itemCountPerPage);
         $result = $queryBuilder->getQuery()->getScalarResult();
         return $result;
     }
 
-    public function getMenus($filterData, $searchModel = []) {
+    public function getMenus($filterData, $model, $searchModel = []) {
         $entityManager = $this->getEntityManager();
 
         $queryBuilder = $entityManager->createQueryBuilder();
 
-        $queryBuilder->select(array('menu', 'en_GB', 'bg_BG'))
-            ->from(\Admin\Entity\Menu::class, 'menu')
-            ->leftJoin(\Admin\Entity\MenuLng::class, 'en_GB', \Doctrine\ORM\Query\Expr\Join::WITH, "menu.id=en_GB.menuId AND en_GB.lng='en_GB'")
-            ->leftJoin(\Admin\Entity\MenuLng::class, 'bg_BG', \Doctrine\ORM\Query\Expr\Join::WITH, "menu.id=bg_BG.menuId AND bg_BG.lng='bg_BG'");
+        $queryBuilder->select(array('t', 'en_GB', 'bg_BG'))
+            ->from(\Admin\Entity\Menu::class, 't')
+            ->leftJoin(\Admin\Entity\MenuLng::class, 'en_GB', \Doctrine\ORM\Query\Expr\Join::WITH, "t.id=en_GB.menuId AND en_GB.lng='en_GB'")
+            ->leftJoin(\Admin\Entity\MenuLng::class, 'bg_BG', \Doctrine\ORM\Query\Expr\Join::WITH, "t.id=bg_BG.menuId AND bg_BG.lng='bg_BG'");
 //		$result = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
         if (!empty($searchModel)) {

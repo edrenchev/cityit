@@ -5,9 +5,9 @@ use Admin\Paginator\Adapter;
 use Libs\Admin\ListTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Paginator\Paginator;
+use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 use Admin\Entity\Menu;
-use Zend\Session\Container;
 use Admin\Form\SearchForm;
 
 class MenuController extends AbstractActionController {
@@ -15,9 +15,94 @@ class MenuController extends AbstractActionController {
     private $entityManager;
     private $siteConfig;
 
+    public $model = [
+        'name' => [
+            'title' => 'Name',
+            'type' => 'char'
+        ],
+        'isActive' => [
+            'title' => 'Is Active',
+            'type' => 'enum',
+            'options' => [0 => 'No', 1 => 'Yes'],
+        ],
+        'createDate' => [
+            'title' => 'Create Date',
+            'type' => 'datetime',
+        ],
+        '*.menuTitle' => [
+            'title' => 'Menu Title',
+            'type' => 'char',
+        ],
+        '*.pageTitle' => [
+            'title' => 'Page Title',
+            'type' => 'char',
+        ],
+        '*.contentTitle' => [
+            'title' => 'Content Title',
+            'type' => 'char',
+        ],
+    ];
+
+    public $search = [
+        'name',
+        'isActive',
+        'createDateFrom' => [
+            'title' => 'Create Date From',
+            'type' => 'datetime',
+            'comparison' => 'ge',
+            'dbField' => 'create_date',
+        ],
+        'createDateTo' => [
+            'title' => 'Create Date To',
+            'type' => 'datetime',
+            'comparison' => 'le',
+            'dbField' => 'create_date',
+        ],
+        '*.menuTitle',
+        '*.pageTitle',
+        '*.contentTitle',
+    ];
+
+    public $list = [
+        'name',
+        'isActive',
+        '*.menuTitle',
+        '*.pageTitle',
+        '*.contentTitle',
+    ];
+
+    public $searchModel = [
+        'menu_id' => [
+            'label' => 'Menu Id',
+            'field' => 'menu.id',
+            'comparison' => 'eq',
+        ],
+        'menu_name' => [
+            'label' => 'Menu Name',
+            'field' => 'menu.name',
+            'comparison' => 'eq',
+        ],
+        'menu_is_active' => [
+            'label' => 'Is Active',
+            'field' => 'menu.isActive',
+            'comparison' => 'eq',
+            'options' => [0 => 'No', 1 => 'Yes'],
+        ],
+        'menu_create_date_from' => [
+            'label' => 'Create From',
+            'field' => 'menu.createFrom',
+            'comparison' => 'ge',
+        ],
+        'menu_create_date_to' => [
+            'label' => 'Create To',
+            'field' => 'menu.createFrom',
+            'comparison' => 'le',
+        ],
+    ];
+
     /**
      * Session container.
-     * @var Zend\Session\Container
+     * @var Container
      */
     private $sessionContainer;
 
@@ -29,36 +114,7 @@ class MenuController extends AbstractActionController {
 
     public function indexAction() {
 
-        $searchModel = [
-            'menu_id' => [
-                'label' => 'Menu Id',
-                'field' => 'menu.id',
-                'comparison' => 'eq',
-            ],
-            'menu_name' => [
-                'label' => 'Menu Name',
-                'field' => 'menu.name',
-                'comparison' => 'eq',
-            ],
-            'menu_is_active' => [
-                'label' => 'Is Active',
-                'field' => 'menu.isActive',
-                'comparison' => 'eq',
-                'options' => [0 => 'No', 1 => 'Yes'],
-            ],
-            'menu_create_date_from' => [
-                'label' => 'Create From',
-                'field' => 'menu.createFrom',
-                'comparison' => 'ge',
-            ],
-            'menu_create_date_to' => [
-                'label' => 'Create To',
-                'field' => 'menu.createFrom',
-                'comparison' => 'le',
-            ],
-        ];
-
-        $searchForm = new SearchForm($searchModel);
+        $searchForm = new SearchForm($this->model, $this->search, $this->siteConfig['languages']);
 
         if ($this->getRequest()->isPost()) {
             // Fill in the form with POST data
@@ -141,37 +197,26 @@ class MenuController extends AbstractActionController {
         //TODO sled tova menu da go prevarna v asociativen masiv!!!!!
 
 
-        $thead = [
-            'menu_id' => 'Id',
-            'menu_name' => 'Name',
-            'menu_isActive' => 'Is Active',
-            'en_GB_menuTitle' => 'Menu Title (en)',
-            'bg_BG_menuTitle' => 'Menu Title (bg)',
-            'en_GB_pageTitle' => 'Page Title (en)',
-            'bg_BG_pageTitle' => 'Page Title (bg)',
-            'en_GB_contentTitle' => 'Content Title (en)',
-            'bg_BG_contentTitle' => 'Content Title (bg)',
-        ];
-
         $orders = [];
         if (isset($this->sessionContainer->menuIndexFilterData['orders'])) {
             $orders = $this->sessionContainer->menuIndexFilterData['orders'];
         }
 
         $repo = $this->entityManager->getRepository(Menu::class);
-        $adapter = new Adapter($repo, $filterData, $searchModel);
+        $adapter = new Adapter($repo, $filterData, $this->model, $this->searchModel);
         $paginator = new Paginator($adapter);
         $page = $this->params()->fromQuery('page', 1);
-        $paginator->setCurrentPageNumber($page)->setItemCountPerPage(1);
-
+        $paginator->setCurrentPageNumber($page)->setItemCountPerPage(2);
 
 //        $listTable = new ListTable($thead, $orders, $result, 'home', '', '');
-        $listTable = new ListTable($thead, $orders, $paginator, 'home', '', '');
+        $listTable = new ListTable($this->model, $this->list, $orders, $paginator, $this->siteConfig['languages'], 'home', '', '');
 
         return new ViewModel([
             'listTable' => $listTable,
             'searchForm' => $searchForm,
-            'searchModel' => $searchModel,
+            'searchModel' => $this->searchModel,
+            'searchList' => $this->search,
+            'languages' => $this->siteConfig['languages'],
             'paginator' => $paginator,
         ]);
     }

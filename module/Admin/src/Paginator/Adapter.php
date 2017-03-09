@@ -7,17 +7,19 @@ use Zend\Paginator\Adapter\AdapterInterface;
 class Adapter implements AdapterInterface {
     protected $repository;
     protected $filterData;
-    protected $searchModel;
+    protected $model;
+    protected $search;
 
     /**
      * Construct
      *
      * @param \Doctrine\ORM\EntityRepository $repository Repository class
      */
-    public function __construct($repository, $filterData, $searchModel = []) {
+    public function __construct($repository, $filterData, $model, $searchModel = []) {
         $this->repository = $repository;
         $this->filterData = $filterData;
-        $this->searchModel = $searchModel;
+        $this->model = $model;
+        $this->search = $searchModel;
     }
 
     /**
@@ -29,7 +31,7 @@ class Adapter implements AdapterInterface {
      * @return array
      */
     public function getItems($offset, $itemCountPerPage) {
-        return $this->repository->getItems($offset, $itemCountPerPage, $this->filterData, $this->searchModel);
+        return $this->repository->getItems($offset, $itemCountPerPage, $this->filterData, $this->model, $this->search);
     }
 
     /**
@@ -38,7 +40,7 @@ class Adapter implements AdapterInterface {
      * @return int
      */
     public function count() {
-        return $this->repository->count($this->filterData, $this->searchModel);
+        return $this->repository->count($this->filterData, $this->model, $this->searchModel);
     }
 
 }
