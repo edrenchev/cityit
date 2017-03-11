@@ -22,6 +22,8 @@ class ListTable {
     private $languages;
     private $orders;
     private $orderCnt;
+    private $tableData;
+    private $tableHead;
 
     public function __construct($model, $head, $orders = [], $data, $languages, $routeName, $currPage, $totalPage, $itemPerPage = 25) {
 
@@ -35,6 +37,8 @@ class ListTable {
         $this->setLanguages($languages);
         $this->orders = $orders;
         $this->orderCnt = 0;
+        $this->tableData = [];
+        $this->tableHead = [];
 
         $this->itemsPerPage = [
             5 => 5,
@@ -47,7 +51,88 @@ class ListTable {
             1000 => 1000,
         ];
 
+        $this->setTableHead($head);
+        $this->setTableData($data);
     }
+
+    public function getTableHead() {
+        return $this->tableHead;
+    }
+
+    public function setTableHead($head) {
+        $this->tableHead['_editId'] = 'Edit';
+        foreach ($head as $k => $item) {
+            $tFields = Helper::transformFiled($item, $this->languages);
+            foreach ($tFields as $lng => $tField) {
+                $lngStr = $lng != '0' ? " {$lng}" : '';
+                $this->tableHead[$tField] = $this->model[$item]['title'] . $lngStr;
+            }
+        }
+    }
+
+    public function getTableData() {
+        return $this->tableData;
+    }
+
+    public function setTableData($data) {
+        foreach ($data as $k => $item) {
+            $this->tableData[$k]['_editId'] = $item['t_id'];
+            /*foreach ($this->head as $head) {
+                $tFields = Helper::transformFiled($head, $this->languages);
+                foreach ($tFields as $tField) {
+                    $this->tableData[$k][$tField] = $item[$tField];
+                }
+            }*/
+            foreach (array_keys($this->getTableHead()) as $key) {
+                if ($key == '_editId') {
+                    $this->tableData[$k][$key] = $item['t_id'];
+                    continue;
+                }
+                $this->tableData[$k][$key] = $item[$key];
+            }
+        }
+    }
+
+    public function getTableHeadHtml() {
+        $tableHeadHtml = '';
+        foreach ($this->getTableHead() as $key => $item) {
+            $order = '';
+            $orderPosition = '';
+            if (isset($this->orders[$key])) {
+                $order = $this->orders[$key];
+                $this->orderCnt += 1;
+                $orderPosition = " data-order-position='{$this->orderCnt}'";
+            }
+            if($key == '_edit') {
+                $tableHeadHtml .= <<<EOD
+<th>{$item}</th>
+EOD;
+                continue;
+            }
+            $tableHeadHtml .= <<<EOD
+<th data-order-column="{$key}" data-order="{$order}"{$orderPosition}>{$item}</th>
+EOD;
+        }
+
+        return $tableHeadHtml;
+    }
+
+    public function getTableDataHtml() {
+        $tableDataHtml = '';
+        foreach($this->getTableData() as $item) {
+            $tmp = '';
+            foreach(array_keys($this->getTableHead()) as $key) {
+                $tmp .= '<td>' . htmlspecialchars($item[$key]) . '</td>';
+            }
+            $tableDataHtml .= "<tr>{$tmp}</tr>";
+        }
+        return $tableDataHtml;
+    }
+
+    public function getTableHtml() {
+        return '<table>'.$this->getTableHeadHtml() . $this->getTableDataHtml().'</table>';
+    }
+
 
     /**
      * @return array

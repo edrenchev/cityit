@@ -2,40 +2,20 @@
 
 $tr = [];
 if (!empty($this->searchList)) {
-    foreach ($this->searchList as $key => $field) {
-        $td = [];
-        if (is_array($field)) {
-            if (strpos($key, '*.') !== false) {
-                $tmpField = substr($key, 2);
-                foreach (array_keys($this->languages) as $lng) {
-                    $td = [];
-                    $td[] = '<td>' . $this->formLabel($this->searchForm->get("{$lng}_{$tmpField}")) . '</td>';
-                    $td[] = '<td>' . $this->formElement($this->searchForm->get("{$lng}_{$tmpField}")) . '</td>';
-                    $tr[] = implode('', $td);
-                }
-                continue;
-            } else {
-                $tmpField = "t_{$key}";
-                $td[] = '<td>' . $this->formLabel($this->searchForm->get($tmpField)) . '</td>';
-                $td[] = '<td>' . $this->formElement($this->searchForm->get($tmpField)) . '</td>';
-            }
+    foreach ($this->searchList as $key => $item) {
+        $field = '';
+        if (is_array($item)) {
+            $field = $key;
         } else {
-            if (strpos($field, '*.') !== false) {
-                $tmpField = substr($field, 2);
-                foreach (array_keys($this->languages) as $lng) {
-                    $td = [];
-                    $td[] = '<td>' . $this->formLabel($this->searchForm->get("{$lng}_{$tmpField}")) . '</td>';
-                    $td[] = '<td>' . $this->formElement($this->searchForm->get("{$lng}_{$tmpField}")) . '</td>';
-                    $tr[] = implode('', $td);
-                }
-                continue;
-            } else {
-                $tmpField = "t_{$field}";
-                $td[] = '<td>' . $this->formLabel($this->searchForm->get($tmpField)) . '</td>';
-                $td[] = '<td>' . $this->formElement($this->searchForm->get($tmpField)) . '</td>';
-            }
+            $field = $item;
         }
-        $tr[] = implode('', $td);
+        $tFields = \Libs\Admin\Helper::transformFiled($field, $this->languages);
+        foreach ($tFields as $tField) {
+            $td = [];
+            $td[] = '<td>' . $this->formLabel($this->searchForm->get($tField)) . '</td>';
+            $td[] = '<td>' . $this->formElement($this->searchForm->get($tField)) . '</td>';
+            $tr[] = implode('', $td);
+        }
     }
 
     echo $this->form()->openTag($this->searchForm);

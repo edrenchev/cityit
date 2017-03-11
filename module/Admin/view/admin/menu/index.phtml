@@ -19,5 +19,6 @@ echo $this->partial('admin/partials/searchForm', [
 ?>
 
 <form action="" method="POST">
+    <?= $listTable->getTableHtml() ?>
     <?= $listTable->getListTable($this->url('home', ['action' => 'edit'])) ?>
 </form>

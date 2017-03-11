@@ -4,10 +4,11 @@ namespace Admin\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Admin\Entity\Menu;
+use Libs\Admin\RepositoryHelper;
 
 class MenuRepository extends EntityRepository {
 
-    public function count($filterData, $searchModel) {
+    public function count($filterData, $languages, $searchModel) {
 
         $entityManager = $this->getEntityManager();
         $queryBuilder = $entityManager->createQueryBuilder();
@@ -17,37 +18,21 @@ class MenuRepository extends EntityRepository {
             ->leftJoin(\Admin\Entity\MenuLng::class, 'en_GB', \Doctrine\ORM\Query\Expr\Join::WITH, "t.id=en_GB.menuId AND en_GB.lng='en_GB'")
             ->leftJoin(\Admin\Entity\MenuLng::class, 'bg_BG', \Doctrine\ORM\Query\Expr\Join::WITH, "t.id=bg_BG.menuId AND bg_BG.lng='bg_BG'");
 
-        if (!empty($searchModel)) {
-            $queryBuilder->where('1=1');
-            foreach ($searchModel as $key => $item) {
-                if (isset($filterData['filter'][$key]) && $filterData['filter'][$key] !== '') {
-                    if ($item['comparison'] == 'eq') {
-                        $queryBuilder->andWhere("{$item['field']} = :{$key}");
-                        $queryBuilder->setParameter($key, $filterData['filter'][$key]);
-                    } elseif ($item['comparison'] == 'ge') {
-                        $queryBuilder->andWhere("{$item['field']} >= :{$key}");
-                        $queryBuilder->setParameter($key, $filterData['filter'][$key]);
-                    } elseif ($item['comparison'] == 'le') {
-                        $queryBuilder->andWhere("{$item['field']} <= :{$key}");
-                        $queryBuilder->setParameter($key, $filterData['filter'][$key]);
-                    }
-                }
-            }
-        }
+        $queryBuilder = RepositoryHelper::addWhereClause($queryBuilder, $languages, $searchModel, $filterData);
 
         $result = $queryBuilder->getQuery()->getSingleScalarResult();
 
         return $result;
     }
 
-    public function getItems($offset, $itemCountPerPage, $filterData, $model, $searchModel = []) {
-        $queryBuilder = $this->getMenus($filterData, $model, $searchModel);
+    public function getItems($offset, $itemCountPerPage, $filterData, $languages, $searchModel = []) {
+        $queryBuilder = $this->getMenus($filterData, $languages, $searchModel);
         $queryBuilder->setFirstResult($offset)->setMaxResults($itemCountPerPage);
         $result = $queryBuilder->getQuery()->getScalarResult();
         return $result;
     }
 
-    public function getMenus($filterData, $model, $searchModel = []) {
+    public function getMenus($filterData, $languages, $searchModel = []) {
         $entityManager = $this->getEntityManager();
 
         $queryBuilder = $entityManager->createQueryBuilder();
@@ -56,25 +41,8 @@ class MenuRepository extends EntityRepository {
             ->from(\Admin\Entity\Menu::class, 't')
             ->leftJoin(\Admin\Entity\MenuLng::class, 'en_GB', \Doctrine\ORM\Query\Expr\Join::WITH, "t.id=en_GB.menuId AND en_GB.lng='en_GB'")
             ->leftJoin(\Admin\Entity\MenuLng::class, 'bg_BG', \Doctrine\ORM\Query\Expr\Join::WITH, "t.id=bg_BG.menuId AND bg_BG.lng='bg_BG'");
-//		$result = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
-        if (!empty($searchModel)) {
-            $queryBuilder->where('1=1');
-            foreach ($searchModel as $key => $item) {
-                if (isset($filterData['filter'][$key]) && $filterData['filter'][$key] !== '') {
-                    if ($item['comparison'] == 'eq') {
-                        $queryBuilder->andWhere("{$item['field']} = :{$key}");
-                        $queryBuilder->setParameter($key, $filterData['filter'][$key]);
-                    } elseif ($item['comparison'] == 'ge') {
-                        $queryBuilder->andWhere("{$item['field']} >= :{$key}");
-                        $queryBuilder->setParameter($key, $filterData['filter'][$key]);
-                    } elseif ($item['comparison'] == 'le') {
-                        $queryBuilder->andWhere("{$item['field']} <= :{$key}");
-                        $queryBuilder->setParameter($key, $filterData['filter'][$key]);
-                    }
-                }
-            }
-        }
+        $queryBuilder = RepositoryHelper::addWhereClause($queryBuilder, $languages, $searchModel, $filterData);
 
         if (!empty($filterData['orders'])) {
             foreach ($filterData['orders'] as $column => $order) {

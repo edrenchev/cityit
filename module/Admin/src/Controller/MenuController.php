@@ -3,6 +3,7 @@ namespace Admin\Controller;
 
 use Admin\Paginator\Adapter;
 use Libs\Admin\ListTable;
+use Libs\Admin\SessionHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Paginator\Paginator;
 use Zend\Session\Container;
@@ -122,94 +123,42 @@ class MenuController extends AbstractActionController {
             if (isset($data['do'])) {
                 $action = $data['do'];
                 if (isset($action['order'])) {
-                    $orderData = $action['order'];
-
-                    $filterData = [];
-                    if (isset($this->sessionContainer->menuIndexFilterData)) {
-                        $filterData = $this->sessionContainer->menuIndexFilterData;
-                    }
-
-                    list($column, $order) = explode(' ', $orderData, 2);
-
-                    if (empty($order)) {
-                        unset($filterData['orders'][$column]);
-                    } else {
-                        $filterData['orders'] = [];
-                        $filterData['orders'][$column] = $order;
-                    }
-
-                    $this->sessionContainer->menuIndexFilterData = $filterData;
-
+                    SessionHelper::setOrders($this->sessionContainer, static::class, $action['order']);
                 } elseif (isset($action['addOrder'])) {
-                    $orderData = $action['addOrder'];
-
-                    $filterData = [];
-                    if (isset($this->sessionContainer->menuIndexFilterData)) {
-                        $filterData = $this->sessionContainer->menuIndexFilterData;
-                    }
-
-                    list($column, $order) = explode(' ', $orderData, 2);
-
-                    if (empty($order)) {
-                        $filterData['orders'][$column] = 'ASC';
-                    } else {
-                        $filterData['orders'][$column] = $order;
-                    }
-
-                    $this->sessionContainer->menuIndexFilterData = $filterData;
+                    SessionHelper::addOrders($this->sessionContainer, static::class, $action['addOrder']);
                 }
             } else {
-
                 $data = $this->params()->fromPost();
 
-                $filterData = [];
-                if (isset($this->sessionContainer->menuIndexFilterData)) {
-                    $filterData = $this->sessionContainer->menuIndexFilterData;
-                }
-
                 if (isset($data['submit']) && $data['submit'] == 'Search') {
-                    $filterData['filter'] = $data;
+                    SessionHelper::addSearchData($this->sessionContainer, static::class, $data);
                 } elseif (isset($data['clear']) && $data['clear'] == 'Clear') {
-                    $filterData['filter'] = [];
+                    SessionHelper::clearSearchData($this->sessionContainer, static::class);
                     $data = [];
                 }
                 $searchForm->setData($data);
-                $this->sessionContainer->menuIndexFilterData = $filterData;
-
             }
         } else {
-            if (!empty($this->sessionContainer->menuIndexFilterData['filter'])) {
-                $searchForm->setData($this->sessionContainer->menuIndexFilterData['filter']);
+            $searchData = SessionHelper::getSearchData($this->sessionContainer, static::class);
+            if (isset($searchData['filter'])) {
+                $searchForm->setData($searchData['filter']);
             }
         }
 
-        $filterData = [];
-        if (isset($this->sessionContainer->menuIndexFilterData)) {
-            $filterData = $this->sessionContainer->menuIndexFilterData;
-        }
-
-        echo '<pre>' . print_r($filterData, true) . '</pre>';
-
-//        $result = $this->entityManager->getRepository(Menu::class)->getMenus($filterData, $searchModel);
-//        $result = $result->getScalarResult();
+        echo '<pre>' . print_r(SessionHelper::getSearchData($this->sessionContainer, static::class), true) . '</pre>';
 
         //TODO doctrine 2 partial!!!!!
         //TODO sled tova menu da go prevarna v asociativen masiv!!!!!
 
-
-        $orders = [];
-        if (isset($this->sessionContainer->menuIndexFilterData['orders'])) {
-            $orders = $this->sessionContainer->menuIndexFilterData['orders'];
-        }
-
         $repo = $this->entityManager->getRepository(Menu::class);
-        $adapter = new Adapter($repo, $filterData, $this->model, $this->searchModel);
+        $adapter = new Adapter($repo, SessionHelper::getSearchData($this->sessionContainer, static::class), $this->siteConfig['languages'], $this->search);
         $paginator = new Paginator($adapter);
         $page = $this->params()->fromQuery('page', 1);
         $paginator->setCurrentPageNumber($page)->setItemCountPerPage(2);
 
 //        $listTable = new ListTable($thead, $orders, $result, 'home', '', '');
-        $listTable = new ListTable($this->model, $this->list, $orders, $paginator, $this->siteConfig['languages'], 'home', '', '');
+
+        $listTable = new ListTable($this->model, $this->list, SessionHelper::getOrdersData($this->sessionContainer, static::class), $paginator, $this->siteConfig['languages'], 'home', '', '');
 
         return new ViewModel([
             'listTable' => $listTable,

@@ -8,6 +8,7 @@ class Adapter implements AdapterInterface {
     protected $repository;
     protected $filterData;
     protected $model;
+    protected $languages;
     protected $search;
 
     /**
@@ -15,10 +16,11 @@ class Adapter implements AdapterInterface {
      *
      * @param \Doctrine\ORM\EntityRepository $repository Repository class
      */
-    public function __construct($repository, $filterData, $model, $searchModel = []) {
+    public function __construct($repository, $filterData, $languages, $searchModel = []) {
         $this->repository = $repository;
         $this->filterData = $filterData;
-        $this->model = $model;
+//        $this->model = $model;
+        $this->languages = $languages;
         $this->search = $searchModel;
     }
 
@@ -31,7 +33,7 @@ class Adapter implements AdapterInterface {
      * @return array
      */
     public function getItems($offset, $itemCountPerPage) {
-        return $this->repository->getItems($offset, $itemCountPerPage, $this->filterData, $this->model, $this->search);
+        return $this->repository->getItems($offset, $itemCountPerPage, $this->filterData, $this->languages, $this->search);
     }
 
     /**
@@ -40,7 +42,7 @@ class Adapter implements AdapterInterface {
      * @return int
      */
     public function count() {
-        return $this->repository->count($this->filterData, $this->model, $this->searchModel);
+        return $this->repository->count($this->filterData, $this->languages, $this->search);
     }
 
 }
