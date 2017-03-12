@@ -1,24 +1,19 @@
 <h1>Menu</h1>
 
-<style>
-    th, td {
-        padding: 5px 10px;
-    }
-</style>
+<div class="admin-content-wrap">
+    <?php
 
-<?php
+    echo $this->partial('admin/partials/searchForm', [
+        'searchList' => $this->searchList,
+        'searchForm' => $this->searchForm,
+        'languages' => $this->languages,
+    ]);
 
-echo $this->paginationControl($paginator, 'Sliding', 'admin/partials/paginator', ['route' => 'home']);
+    ?>
 
-echo $this->partial('admin/partials/searchForm', [
-    'searchList' => $this->searchList,
-    'searchForm' => $this->searchForm,
-    'languages' => $this->languages,
-]);
+    <form action="" method="POST">
+        <?= $this->paginationControl($paginator, 'Sliding', 'admin/partials/paginator', ['route' => $this->routeName, 'ipp'=>$paginator->getItemCountPerPage()]) ?>
+        <?= $listTable->getTableHtml() ?>
+    </form>
 
-?>
-
-<form action="" method="POST">
-    <?= $listTable->getTableHtml() ?>
-    <?= $listTable->getListTable($this->url('home', ['action' => 'edit'])) ?>
-</form>
+</div>

@@ -86,4 +86,21 @@ class SessionHelper {
         return [];
     }
 
+    public static function addItemsPerPage(Container $sessionContainer, $sessionKey, $ipp) {
+        $filterData = [];
+        if ($sessionContainer->offsetExists($sessionKey) === true) {
+            $filterData = $sessionContainer->offsetGet($sessionKey);
+        }
+        $filterData['ipp'] = $ipp;
+        $sessionContainer->offsetSet($sessionKey, $filterData);
+    }
+
+    public static function getItemsPerPage(Container $sessionContainer, $sessionKey) {
+        if ($sessionContainer->offsetExists($sessionKey) === true) {
+            $data = $sessionContainer->offsetGet($sessionKey);
+            return isset($data['ipp']) ? $data['ipp'] : 1;
+        }
+        return 1;
+    }
+
 }

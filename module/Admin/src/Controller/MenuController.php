@@ -120,12 +120,15 @@ class MenuController extends AbstractActionController {
         if ($this->getRequest()->isPost()) {
             // Fill in the form with POST data
             $data = $this->params()->fromPost();
+
             if (isset($data['do'])) {
                 $action = $data['do'];
                 if (isset($action['order'])) {
                     SessionHelper::setOrders($this->sessionContainer, static::class, $action['order']);
                 } elseif (isset($action['addOrder'])) {
                     SessionHelper::addOrders($this->sessionContainer, static::class, $action['addOrder']);
+                } elseif(isset($action['addItemsPerPage'])) {
+                    SessionHelper::addItemsPerPage($this->sessionContainer, static::class, $action['addItemsPerPage']);
                 }
             } else {
                 $data = $this->params()->fromPost();
@@ -154,11 +157,11 @@ class MenuController extends AbstractActionController {
         $adapter = new Adapter($repo, SessionHelper::getSearchData($this->sessionContainer, static::class), $this->siteConfig['languages'], $this->search);
         $paginator = new Paginator($adapter);
         $page = $this->params()->fromQuery('page', 1);
-        $paginator->setCurrentPageNumber($page)->setItemCountPerPage(2);
+        $ipp = SessionHelper::getItemsPerPage($this->sessionContainer, static::class);
+        $paginator->setCurrentPageNumber($page)->setItemCountPerPage($ipp);
 
-//        $listTable = new ListTable($thead, $orders, $result, 'home', '', '');
-
-        $listTable = new ListTable($this->model, $this->list, SessionHelper::getOrdersData($this->sessionContainer, static::class), $paginator, $this->siteConfig['languages'], 'home', '', '');
+//        $listTable = new ListTable($thead, $orders, $result, 'menu', '', '');
+        $listTable = new ListTable($this->model, $this->list, SessionHelper::getOrdersData($this->sessionContainer, static::class), $paginator, $this->siteConfig['languages'], 'menu', '', '', 25, $this->url()->fromRoute('menu'));
 
         return new ViewModel([
             'listTable' => $listTable,
@@ -167,6 +170,7 @@ class MenuController extends AbstractActionController {
             'searchList' => $this->search,
             'languages' => $this->siteConfig['languages'],
             'paginator' => $paginator,
+            'routeName' => 'menu',
         ]);
     }
 

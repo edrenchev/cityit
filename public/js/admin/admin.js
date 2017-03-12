@@ -44,5 +44,10 @@ $(document).ready(function () {
         }
     });
 
+    $('.pagination-control select').on('change', function (event) {
+        var val = $(this).val();
+        doAction(this, 'addItemsPerPage', val);
+    });
+
 
 });

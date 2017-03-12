@@ -13,7 +13,6 @@ class ListTable {
 
     private $model;
     private $head;
-    private $basicUrl;
     private $data;
     private $currPage;
     private $totalPage;
@@ -24,8 +23,10 @@ class ListTable {
     private $orderCnt;
     private $tableData;
     private $tableHead;
+    private $baseUrl;
+    private $mapData = [];
 
-    public function __construct($model, $head, $orders = [], $data, $languages, $routeName, $currPage, $totalPage, $itemPerPage = 25) {
+    public function __construct($model, $head, $orders = [], $data, $languages, $routeName, $currPage, $totalPage, $itemPerPage = 25, $baseUrl) {
 
         $this->model = $model;
         $this->head = $head;
@@ -39,6 +40,7 @@ class ListTable {
         $this->orderCnt = 0;
         $this->tableData = [];
         $this->tableHead = [];
+        $this->basicUrl = $baseUrl;
 
         $this->itemsPerPage = [
             5 => 5,
@@ -60,10 +62,14 @@ class ListTable {
     }
 
     public function setTableHead($head) {
+        $this->tableHead['_selectId'] = '<input type="checkbox" name="allChecked"/>';
         $this->tableHead['_editId'] = 'Edit';
         foreach ($head as $k => $item) {
             $tFields = Helper::transformFiled($item, $this->languages);
             foreach ($tFields as $lng => $tField) {
+                if ($this->model[$item]['type'] == 'enum') {
+                    $this->mapData[$tField] = $this->model[$item]['options'];
+                }
                 $lngStr = $lng != '0' ? " {$lng}" : '';
                 $this->tableHead[$tField] = $this->model[$item]['title'] . $lngStr;
             }
@@ -76,6 +82,7 @@ class ListTable {
 
     public function setTableData($data) {
         foreach ($data as $k => $item) {
+            $this->tableData[$k]['_selectId'] = $item['t_id'];
             $this->tableData[$k]['_editId'] = $item['t_id'];
             /*foreach ($this->head as $head) {
                 $tFields = Helper::transformFiled($head, $this->languages);
@@ -85,6 +92,9 @@ class ListTable {
             }*/
             foreach (array_keys($this->getTableHead()) as $key) {
                 if ($key == '_editId') {
+                    $this->tableData[$k][$key] = $item['t_id'];
+                    continue;
+                } elseif ($key == '_selectId') {
                     $this->tableData[$k][$key] = $item['t_id'];
                     continue;
                 }
@@ -103,7 +113,7 @@ class ListTable {
                 $this->orderCnt += 1;
                 $orderPosition = " data-order-position='{$this->orderCnt}'";
             }
-            if($key == '_edit') {
+            if ($key == '_edit') {
                 $tableHeadHtml .= <<<EOD
 <th>{$item}</th>
 EOD;
@@ -119,10 +129,19 @@ EOD;
 
     public function getTableDataHtml() {
         $tableDataHtml = '';
-        foreach($this->getTableData() as $item) {
+        foreach ($this->getTableData() as $item) {
             $tmp = '';
-            foreach(array_keys($this->getTableHead()) as $key) {
-                $tmp .= '<td>' . htmlspecialchars($item[$key]) . '</td>';
+            foreach (array_keys($this->getTableHead()) as $key) {
+                if ($key == '_editId') {
+                    $value = "<a href='{$this->basicUrl}/edit/{$item[$key]}'>Edit</a>";
+                } elseif ($key == '_selectId') {
+                    $value = "<input type='checkbox' name='checked[{$item[$key]}]' />";
+                } elseif (isset($this->mapData[$key])) {
+                    $value = htmlspecialchars($this->mapData[$key][$item[$key]]);
+                } else {
+                    $value = htmlspecialchars($item[$key]);
+                }
+                $tmp .= '<td>' . $value . '</td>';
             }
             $tableDataHtml .= "<tr>{$tmp}</tr>";
         }
@@ -130,7 +149,7 @@ EOD;
     }
 
     public function getTableHtml() {
-        return '<table>'.$this->getTableHeadHtml() . $this->getTableDataHtml().'</table>';
+        return '<table class="list-data"  cellpadding="0" cellspacing="0">' . $this->getTableHeadHtml() . $this->getTableDataHtml() . '</table>';
     }
 
 

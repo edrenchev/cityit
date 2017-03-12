@@ -1,0 +1,47 @@
+.admin-content-wrap {
+    display: inline-block;
+    min-width: 600px;
+    width: auto;
+}
+
+.admin-content-wrap table {
+    /*width: 100%;*/
+}
+
+.search-filter, .pagination-control, .list-data {
+    margin: 20px 0;
+}
+.search-filter table td {
+    text-align: left;
+}
+
+.pagination-control {
+    width: 100%;
+}
+.pagination-control td{
+    width: 33.333%;
+}
+.pagination-control .left{
+    text-align: left;
+}
+.pagination-control .center{
+    text-align: center;
+}
+.pagination-control .right{
+    text-align: right;
+}
+
+.pagination-control input {
+    width: 50px;
+}
+
+.list-data {
+    border-collapse: collapse;
+}
+.list-data th, .list-data td {
+    border: 1px solid #000;
+    padding: 5px 2px;
+}
+.list-data th sup {
+    vertical-align: text-top;
+}

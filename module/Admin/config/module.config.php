@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 return [
     'router' => [
         'routes' => [
-            'home' => [
+            'menu' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/admin/menu[/:action[/:id]]',
