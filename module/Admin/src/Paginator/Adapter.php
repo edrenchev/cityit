@@ -10,6 +10,7 @@ class Adapter implements AdapterInterface {
     protected $model;
     protected $languages;
     protected $search;
+    protected $cnt;
 
     /**
      * Construct
@@ -42,7 +43,10 @@ class Adapter implements AdapterInterface {
      * @return int
      */
     public function count() {
-        return $this->repository->count($this->filterData, $this->languages, $this->search);
+        if($this->cnt === null) {
+            $this->cnt = $this->repository->count($this->filterData, $this->languages, $this->search);
+        }
+        return $this->cnt;
     }
 
 }

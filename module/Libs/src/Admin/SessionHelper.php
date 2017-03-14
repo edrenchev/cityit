@@ -98,9 +98,9 @@ class SessionHelper {
     public static function getItemsPerPage(Container $sessionContainer, $sessionKey) {
         if ($sessionContainer->offsetExists($sessionKey) === true) {
             $data = $sessionContainer->offsetGet($sessionKey);
-            return isset($data['ipp']) ? $data['ipp'] : 1;
+            return isset($data['ipp']) ? $data['ipp'] : 25;
         }
-        return 1;
+        return 25;
     }
 
 }

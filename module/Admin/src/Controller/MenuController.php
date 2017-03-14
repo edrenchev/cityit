@@ -17,18 +17,71 @@ class MenuController extends AbstractActionController {
     private $siteConfig;
 
     public $model = [
+        'pid' => [
+            'title' => 'Pid',
+            'type' => 'integer'
+        ],
+        'ord' => [
+            'title' => 'Ord',
+            'type' => 'integer'
+        ],
+        'Tags' => [
+            'title' => 'Tags',
+            'type' => 'set'
+        ],
+        'url' => [
+            'title' => 'Url',
+            'type' => 'char'
+        ],
         'name' => [
             'title' => 'Name',
             'type' => 'char'
         ],
-        'isActive' => [
+        'skinId' => [
+            'title' => 'Skin Id',
+            'type' => 'integer'
+        ],
+        'templateId' => [
+            'title' => 'Template Id',
+            'type' => 'integer'
+        ],
+        'params' => [
+            'title' => 'Params',
+            'type' => 'char'
+        ],
+        'headHtml' => [
+            'title' => 'Head HTML',
+            'type' => 'text'
+        ],
+        'preBodyHtml' => [
+            'title' => 'Pre Body HTML',
+            'type' => 'text'
+        ],
+        'posBodyHtml' => [
+            'title' => 'Pos Body HTML',
+            'type' => 'text'
+        ],
+        'jsonData' => [
+            'title' => 'JSON Data',
+            'type' => 'text'
+        ],
+//        'isActive' => [
+//            'title' => 'Is Active',
+//            'type' => 'enum',
+//            'options' => [0 => 'No', 1 => 'Yes'],
+////        ],
+//        'createDate' => [
+//            'title' => 'Create Date',
+//            'type' => 'datetime',
+//        ],
+        '*.isActive' => [
             'title' => 'Is Active',
             'type' => 'enum',
             'options' => [0 => 'No', 1 => 'Yes'],
         ],
-        'createDate' => [
-            'title' => 'Create Date',
-            'type' => 'datetime',
+        '*.url' => [
+            'title' => 'Url',
+            'type' => 'char'
         ],
         '*.menuTitle' => [
             'title' => 'Menu Title',
@@ -42,23 +95,43 @@ class MenuController extends AbstractActionController {
             'title' => 'Content Title',
             'type' => 'char',
         ],
+        '*.metaDescriptions' => [
+            'title' => 'Meta Descriptions',
+            'type' => 'text',
+        ],
+        '*.metaKeywords' => [
+            'title' => 'Meta Keywords',
+            'type' => 'text',
+        ],
+        '*.headHtml' => [
+            'title' => 'Head HTML',
+            'type' => 'text',
+        ],
+        '*.preBodyHtml' => [
+            'title' => 'Pre Body HTML',
+            'type' => 'text'
+        ],
+        '*.posBodyHtml' => [
+            'title' => 'Pos Body HTML',
+            'type' => 'text'
+        ],
     ];
 
     public $search = [
         'name',
-        'isActive',
-        'createDateFrom' => [
-            'title' => 'Create Date From',
-            'type' => 'datetime',
-            'comparison' => 'ge',
-            'dbField' => 'create_date',
-        ],
-        'createDateTo' => [
-            'title' => 'Create Date To',
-            'type' => 'datetime',
-            'comparison' => 'le',
-            'dbField' => 'create_date',
-        ],
+        '*.isActive',
+//        'createDateFrom' => [
+//            'title' => 'Create Date From',
+//            'type' => 'datetime',
+//            'comparison' => 'ge',
+//            'dbField' => 'create_date',
+//        ],
+//        'createDateTo' => [
+//            'title' => 'Create Date To',
+//            'type' => 'datetime',
+//            'comparison' => 'le',
+//            'dbField' => 'create_date',
+//        ],
         '*.menuTitle',
         '*.pageTitle',
         '*.contentTitle',
@@ -66,7 +139,7 @@ class MenuController extends AbstractActionController {
 
     public $list = [
         'name',
-        'isActive',
+        '*.isActive',
         '*.menuTitle',
         '*.pageTitle',
         '*.contentTitle',

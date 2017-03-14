@@ -55,4 +55,17 @@ class RepositoryHelper {
         return $queryBuilder;
     }
 
+    public static function addOrdersClause($queryBuilder, $orders) {
+        if (!empty($orders)) {
+            foreach ($orders as $column => $order) {
+                if ($order == '') continue;
+                $tmpPos = strrpos($column, '_');
+                $table = substr($column, 0, $tmpPos);
+                $column = substr($column, $tmpPos + 1);
+                $queryBuilder->addOrderBy("{$table}.{$column}", $order);
+            }
+        }
+        return $queryBuilder;
+    }
+
 }

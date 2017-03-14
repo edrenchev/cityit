@@ -62,7 +62,9 @@ class ListTable {
     }
 
     public function setTableHead($head) {
-        $this->tableHead['_selectId'] = '<input type="checkbox" name="allChecked"/>';
+        $this->tableHead['_selectId'] = <<<EOD
+<input type="checkbox" name="allChecked" onclick="$('input[type=checkbox][name^=\'checked\']').prop('checked', this.checked).trigger('change')"/>
+EOD;
         $this->tableHead['_editId'] = 'Edit';
         foreach ($head as $k => $item) {
             $tFields = Helper::transformFiled($item, $this->languages);
@@ -113,7 +115,7 @@ class ListTable {
                 $this->orderCnt += 1;
                 $orderPosition = " data-order-position='{$this->orderCnt}'";
             }
-            if ($key == '_edit') {
+            if ($key == '_selectId' || $key == '_editId') {
                 $tableHeadHtml .= <<<EOD
 <th>{$item}</th>
 EOD;

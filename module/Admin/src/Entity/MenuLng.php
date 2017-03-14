@@ -19,14 +19,24 @@ class MenuLng {
 
     /**
      * @ORM\ManyToOne(targetEntity="\Admin\Entity\Menu", inversedBy="translations", fetch="EAGER")
-     * @ORM\JoinColumn(name="menu_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="mid", referencedColumnName="id")
      */
-    protected $menuId;
+    protected $mid;
 
     /**
      * @ORM\Column(name="lng")
      */
     protected $lng;
+
+    /**
+     * @ORM\Column(name="is_active")
+     */
+    protected $isActive;
+
+    /**
+     * @ORM\Column(name="url")
+     */
+    protected $url;
 
     /**
      * @ORM\Column(name="menu_title")
@@ -42,6 +52,31 @@ class MenuLng {
      * @ORM\Column(name="content_title")
      */
     protected $contentTitle;
+
+    /**
+     * @ORM\Column(name="meta_description")
+     */
+    protected $metaDescription;
+
+    /**
+     * @ORM\Column(name="meta_keywords")
+     */
+    protected $metaKeywords;
+
+    /**
+     * @ORM\Column(name="head_html")
+     */
+    protected $headHtml;
+
+    /**
+     * @ORM\Column(name="pre_body_html")
+     */
+    protected $preBodyHtml;
+
+    /**
+     * @ORM\Column(name="pos_body_html")
+     */
+    protected $posBodyHtml;
 
     /**
      * @return mixed
@@ -60,15 +95,15 @@ class MenuLng {
     /**
      * @return mixed
      */
-    public function getMenuId() {
-        return $this->menuId;
+    public function getMid() {
+        return $this->mid;
     }
 
     /**
-     * @param mixed $menuId
+     * @param mixed $mid
      */
-    public function setMenuId($menuId) {
-        $this->menuId = $menuId;
+    public function setMid($mid) {
+        $this->mid = $mid;
     }
 
     /**
@@ -83,6 +118,34 @@ class MenuLng {
      */
     public function setLng($lng) {
         $this->lng = $lng;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsActive() {
+        return $this->isActive;
+    }
+
+    /**
+     * @param mixed $isActive
+     */
+    public function setIsActive($isActive) {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUrl() {
+        return $this->url;
+    }
+
+    /**
+     * @param mixed $url
+     */
+    public function setUrl($url) {
+        $this->url = $url;
     }
 
     /**
@@ -127,6 +190,75 @@ class MenuLng {
         $this->contentTitle = $contentTitle;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getMetaDescription() {
+        return $this->metaDescription;
+    }
+
+    /**
+     * @param mixed $metaDescription
+     */
+    public function setMetaDescription($metaDescription) {
+        $this->metaDescription = $metaDescription;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMetaKeywords() {
+        return $this->metaKeywords;
+    }
+
+    /**
+     * @param mixed $metaKeywords
+     */
+    public function setMetaKeywords($metaKeywords) {
+        $this->metaKeywords = $metaKeywords;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeadHtml() {
+        return $this->headHtml;
+    }
+
+    /**
+     * @param mixed $headHtml
+     */
+    public function setHeadHtml($headHtml) {
+        $this->headHtml = $headHtml;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPreBodyHtml() {
+        return $this->preBodyHtml;
+    }
+
+    /**
+     * @param mixed $preBodyHtml
+     */
+    public function setPreBodyHtml($preBodyHtml) {
+        $this->preBodyHtml = $preBodyHtml;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPosBodyHtml() {
+        return $this->posBodyHtml;
+    }
+
+    /**
+     * @param mixed $posBodyHtml
+     */
+    public function setPosBodyHtml($posBodyHtml) {
+        $this->posBodyHtml = $posBodyHtml;
+    }
 
 
 }
