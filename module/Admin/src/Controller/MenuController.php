@@ -200,7 +200,7 @@ class MenuController extends AbstractActionController {
                     SessionHelper::setOrders($this->sessionContainer, static::class, $action['order']);
                 } elseif (isset($action['addOrder'])) {
                     SessionHelper::addOrders($this->sessionContainer, static::class, $action['addOrder']);
-                } elseif(isset($action['addItemsPerPage'])) {
+                } elseif (isset($action['addItemsPerPage'])) {
                     SessionHelper::addItemsPerPage($this->sessionContainer, static::class, $action['addItemsPerPage']);
                 }
             } else {
@@ -258,4 +258,64 @@ class MenuController extends AbstractActionController {
     public function deleteAction() {
         return new ViewModel();
     }
+
+    public function treeAction() {
+
+        if ($this->getRequest()->isPost()) {
+            $data = $this->params()->fromPost();
+
+            $source = $data['source'];
+            $destination = !empty($data['destination']) ? $data['destination'] : 0;
+
+            $item = $this->entityManager->getRepository(Menu::class)->findOneBy(['id' => $source]);
+
+            $item->setPid($destination);
+            $this->entityManager->persist($item);
+            $this->entityManager->flush();
+
+            $ordering = '';
+            if(isset($data['order'])) {
+                $ordering = json_decode($data['order'], true);
+            } else {
+                $ordering = json_decode($data['rootOrder'], true);
+            }
+
+            if (!empty($ordering)) {
+                foreach ($ordering as $order => $itemId) {
+                    if ($itemToOrder = $item = $this->entityManager->getRepository(Menu::class)->findOneBy(['id' => $itemId])) {
+                        $itemToOrder->setOrd($order);
+                        $this->entityManager->persist($itemToOrder);
+                        $this->entityManager->flush();
+                    }
+                }
+            }
+//TODO da napravq da ne vrashta HTML view!!!
+            return 'ok';
+        }
+
+        $menu = $this->entityManager->getRepository(Menu::class)->getMenuTree();
+        $menuHtml = $this->buildMenu($menu);
+        return new ViewModel([
+            'menu' => $menuHtml,
+        ]);
+    }
+
+    public function buildMenu($menu, $parentid = 0) {
+        $result = null;
+        foreach ($menu as $item)
+            if ($item->getPid() == $parentid) {
+                $result .= "<li class='dd-item nested-list-item' data-order='{$item->getOrd()}' data-id='{$item->getId()}'>
+	      <div class='dd-handle nested-list-handle'>
+	        <span class='glyphicon glyphicon-move'></span>
+	      </div>
+	      <div class='nested-list-content'>{$item->getName()}
+	        <div class='pull-right'>
+	          <a href='edit'>Edit</a> |
+	          <a href='delete'>Delete</a>
+	        </div>
+	      </div>" . $this->buildMenu($menu, $item->getId()) . "</li>";
+            }
+        return $result ? "\n<ol class=\"dd-list\">\n$result</ol>\n" : null;
+    }
+
 }

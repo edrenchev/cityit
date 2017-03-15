@@ -45,7 +45,7 @@ class MenuRepository extends EntityRepository {
 
         $queryBuilder = RepositoryHelper::addWhereClause($queryBuilder, $languages, $searchModel, $filterData);
 
-        if(!empty($filterData['orders'])) {
+        if (!empty($filterData['orders'])) {
             $queryBuilder = RepositoryHelper::addOrdersClause($queryBuilder, $filterData['orders']);
         }
 
@@ -53,6 +53,14 @@ class MenuRepository extends EntityRepository {
 
 //        var_dump($result->getSql());
         return $result;
+    }
+
+
+    // Getter for the HTML menu builder
+    public function getMenuTree() {
+        $entityManager = $this->getEntityManager();
+        $queryBuilder = $entityManager->createQueryBuilder();
+        return $queryBuilder->select(array('t'))->from(\Admin\Entity\Menu::class, 't')->addOrderBy('t.ord', 'ASC')->getQuery()->getResult();
     }
 
 }
