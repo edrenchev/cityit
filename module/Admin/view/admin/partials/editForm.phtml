@@ -1,0 +1,30 @@
+<div class="edit-form">
+    <div class="title">Edit</div>
+    <div class="fields">
+        <?php
+        $tr = [];
+        if (!empty($this->edit)) {
+            foreach ($this->edit as $key => $item) {
+                $field = '';
+                if (is_array($item)) {
+                    $field = $key;
+                } else {
+                    $field = $item;
+                }
+                $tFields = \Libs\Admin\Helper::transformFiled($field, $this->languages);
+                foreach ($tFields as $tField) {
+                    $td = [];
+                    $td[] = '<td>' . $this->formLabel($this->editForm->get($tField)) . '</td>';
+                    $td[] = '<td>' . $this->formElement($this->editForm->get($tField)) . '</td>';
+                    $tr[] = implode('', $td);
+                }
+            }
+
+            echo $this->form()->openTag($this->editForm);
+            echo '<table cellpadding="0" cellspacing="0"><tr>' . implode('</tr><tr>', $tr) . '</tr></table>';
+            echo $this->formElement($this->editForm->get('save'));
+            echo $this->form()->closeTag();
+        }
+        ?>
+    </div>
+</div>

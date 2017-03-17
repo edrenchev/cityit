@@ -1,6 +1,7 @@
 <?php
 namespace Admin\Controller;
 
+use Admin\Form\EditForm;
 use Admin\Paginator\Adapter;
 use Libs\Admin\ListTable;
 use Libs\Admin\SessionHelper;
@@ -25,7 +26,7 @@ class MenuController extends AbstractActionController {
             'title' => 'Ord',
             'type' => 'integer'
         ],
-        'Tags' => [
+        'tags' => [
             'title' => 'Tags',
             'type' => 'set'
         ],
@@ -116,6 +117,31 @@ class MenuController extends AbstractActionController {
             'type' => 'text'
         ],
     ];
+
+	public $edit = [
+		'pid',
+		'ord',
+		'tags',
+		'url',
+		'name',
+		'skinId',
+		'templateId',
+		'params',
+		'headHtml',
+		'preBodyHtml',
+		'posBodyHtml',
+		'jsonData',
+		'*.isActive',
+		'*.url',
+		'*.menuTitle',
+		'*.pageTitle',
+		'*.contentTitle',
+		'*.metaDescriptions',
+		'*.metaKeywords',
+		'*.headHtml',
+		'*.preBodyHtml',
+		'*.posBodyHtml',
+	];
 
     public $search = [
         'name',
@@ -252,7 +278,12 @@ class MenuController extends AbstractActionController {
     }
 
     public function editAction() {
-        return new ViewModel();
+		$editForm = new EditForm($this->model, $this->edit, $this->siteConfig['languages']);
+        return new ViewModel([
+			'editForm' => $editForm,
+			'edit' => $this->edit,
+			'languages' => $this->siteConfig['languages'],
+		]);
     }
 
     public function deleteAction() {

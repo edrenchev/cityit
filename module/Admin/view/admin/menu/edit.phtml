@@ -1,1 +1,7 @@
-edit
+<?php
+
+echo $this->partial('admin/partials/editForm', [
+	'edit' => $this->edit,
+	'editForm' => $this->editForm,
+	'languages' => $this->languages,
+]);
