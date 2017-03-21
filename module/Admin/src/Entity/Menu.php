@@ -8,6 +8,7 @@
 
 namespace Admin\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -288,6 +289,18 @@ class Menu {
         $this->translations = $translations;
     }
 
+    public function setOptions(array $options) {
+        $_classMethods = get_class_methods($this);
+        foreach ($options as $key => $value) {
+            $method = 'set' . ucfirst($key);
+            if (in_array($method, $_classMethods)) {
+                $this->$method($value);
+            } else {
+                throw new \Exception('Invalid method name: ' . $method);
+            }
+        }
+        return $this;
+    }
 
 
 }

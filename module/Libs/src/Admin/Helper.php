@@ -25,4 +25,15 @@ class Helper {
         return $transformField;
     }
 
+    public static function inverseTransformField($field) {
+        $tmpPos = strrpos($field, '_');
+        $table = substr($field, 0, $tmpPos);
+        $column = substr($field, $tmpPos + 1);
+
+        return [
+            'table' => $table,
+            'column' => $column,
+        ];
+    }
+
 }

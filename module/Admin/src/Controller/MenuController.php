@@ -1,8 +1,10 @@
 <?php
 namespace Admin\Controller;
 
+use Admin\Entity\MenuLng;
 use Admin\Form\EditForm;
 use Admin\Paginator\Adapter;
+use Libs\Admin\Helper;
 use Libs\Admin\ListTable;
 use Libs\Admin\SessionHelper;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -96,7 +98,7 @@ class MenuController extends AbstractActionController {
             'title' => 'Content Title',
             'type' => 'char',
         ],
-        '*.metaDescriptions' => [
+        '*.metaDescription' => [
             'title' => 'Meta Descriptions',
             'type' => 'text',
         ],
@@ -118,30 +120,30 @@ class MenuController extends AbstractActionController {
         ],
     ];
 
-	public $edit = [
-		'pid',
-		'ord',
-		'tags',
-		'url',
-		'name',
-		'skinId',
-		'templateId',
-		'params',
-		'headHtml',
-		'preBodyHtml',
-		'posBodyHtml',
-		'jsonData',
-		'*.isActive',
-		'*.url',
-		'*.menuTitle',
-		'*.pageTitle',
-		'*.contentTitle',
-		'*.metaDescriptions',
-		'*.metaKeywords',
-		'*.headHtml',
-		'*.preBodyHtml',
-		'*.posBodyHtml',
-	];
+    public $edit = [
+        'pid',
+        'ord',
+        'tags',
+        'url',
+        'name',
+        'skinId',
+        'templateId',
+        'params',
+        'headHtml',
+        'preBodyHtml',
+        'posBodyHtml',
+        'jsonData',
+        '*.isActive',
+        '*.url',
+        '*.menuTitle',
+        '*.pageTitle',
+        '*.contentTitle',
+        '*.metaDescription',
+        '*.metaKeywords',
+        '*.headHtml',
+        '*.preBodyHtml',
+        '*.posBodyHtml',
+    ];
 
     public $search = [
         'name',
@@ -278,44 +280,65 @@ class MenuController extends AbstractActionController {
     }
 
     public function editAction() {
-		$editForm = new EditForm($this->model, $this->edit, $this->siteConfig['languages']);
+        $editForm = new EditForm($this->model, $this->edit, $this->siteConfig['languages']);
 
-		$recordId = $this->params()->fromRoute('id', -1);
+        $recordId = $this->params()->fromRoute('id', -1);
 
-		$editData = $this->entityManager->getRepository(Menu::class)->getMenuById($recordId);
+        $editData = $this->entityManager->getRepository(Menu::class)->getMenuById($recordId);
 
-		if ($editData == null) {
-			$this->getResponse()->setStatusCode(404);
-			return;
-		}
+        if ($editData == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
 
-		if ($this->getRequest()->isPost()) {
+        if ($this->getRequest()->isPost()) {
 
-			// Get POST data.
-			$data = $this->params()->fromPost();
+            // Get POST data.
+            $data = $this->params()->fromPost();
 
-			// Fill form with data.
-			$editForm->setData($data);
-			if ($editForm->isValid()) {
+            // Fill form with data.
+            $editForm->setData($data);
+            if ($editForm->isValid()) {
 
-				// Get validated form data.
-				$data = $editForm->getData();
+                // Get validated form data.
+                $data = $editForm->getData();
+                unset($data['save']);
 
-				// Use post manager service to add new post to database.
+                $prepareData = [];
+                foreach ($data as $key => $value) {
+                    $invertTransoformField = Helper::inverseTransformField($key);
+                    $prepareData[$invertTransoformField['table']][$invertTransoformField['column']] = $value;
+                }
+
+                foreach ($prepareData as $table => $item) {
+                    if ($table == 't') {
+                        $menu = $this->entityManager->getRepository(Menu::class)->findOneBy(['id'=>$recordId]);
+                        $menu->setOptions($item);
+                        $this->entityManager->persist($menu);
+                        $this->entityManager->flush();
+                    } elseif (isset($this->siteConfig['languages'][$table])) {
+                        $menuLng = $this->entityManager->getRepository(MenuLng::class)->findOneBy(['mid'=>$recordId, 'lng'=>$table]);
+                        $menuLng->setOptions($item);
+                        $this->entityManager->persist($menuLng);
+                        $this->entityManager->flush();
+                    }
+                }
+
+                // Use post manager service to add new post to database.
 //				$this->postManager->updatePost($post, $data);
 
-				// Redirect the user to "admin" page.
-//				return $this->redirect()->toRoute('posts', ['action'=>'admin']);
-			}
-		}
+                // Redirect the user to "admin" page.
+				return $this->redirect()->toRoute('menu', ['action'=>'edit', 'id'=>$recordId]);
+            }
+        }
 
-		$editForm->setData($editData[0]);
+        $editForm->setData($editData[0]);
 
         return new ViewModel([
-			'editForm' => $editForm,
-			'edit' => $this->edit,
-			'languages' => $this->siteConfig['languages'],
-		]);
+            'editForm' => $editForm,
+            'edit' => $this->edit,
+            'languages' => $this->siteConfig['languages'],
+        ]);
     }
 
     public function deleteAction() {
@@ -337,7 +360,7 @@ class MenuController extends AbstractActionController {
             $this->entityManager->flush();
 
             $ordering = '';
-            if(isset($data['order'])) {
+            if (isset($data['order'])) {
                 $ordering = json_decode($data['order'], true);
             } else {
                 $ordering = json_decode($data['rootOrder'], true);
