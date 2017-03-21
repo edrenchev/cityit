@@ -55,12 +55,26 @@ class MenuRepository extends EntityRepository {
         return $result;
     }
 
-
     // Getter for the HTML menu builder
     public function getMenuTree() {
         $entityManager = $this->getEntityManager();
         $queryBuilder = $entityManager->createQueryBuilder();
         return $queryBuilder->select(array('t'))->from(\Admin\Entity\Menu::class, 't')->addOrderBy('t.ord', 'ASC')->getQuery()->getResult();
     }
+
+    public function getMenuById($id) {
+		$entityManager = $this->getEntityManager();
+
+		$queryBuilder = $entityManager->createQueryBuilder();
+
+		$queryBuilder->select(array('t', 'en_GB', 'bg_BG'))
+			->from(\Admin\Entity\Menu::class, 't')
+			->leftJoin(\Admin\Entity\MenuLng::class, 'en_GB', \Doctrine\ORM\Query\Expr\Join::WITH, "t.id=en_GB.mid AND en_GB.lng='en_GB'")
+			->leftJoin(\Admin\Entity\MenuLng::class, 'bg_BG', \Doctrine\ORM\Query\Expr\Join::WITH, "t.id=bg_BG.mid AND bg_BG.lng='bg_BG'")
+		 	->andWhere("t.id = :id")
+            ->setParameter('id', $id);
+
+		return $queryBuilder->getQuery()->getScalarResult();
+	}
 
 }

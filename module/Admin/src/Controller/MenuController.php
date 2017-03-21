@@ -279,6 +279,38 @@ class MenuController extends AbstractActionController {
 
     public function editAction() {
 		$editForm = new EditForm($this->model, $this->edit, $this->siteConfig['languages']);
+
+		$recordId = $this->params()->fromRoute('id', -1);
+
+		$editData = $this->entityManager->getRepository(Menu::class)->getMenuById($recordId);
+
+		if ($editData == null) {
+			$this->getResponse()->setStatusCode(404);
+			return;
+		}
+
+		if ($this->getRequest()->isPost()) {
+
+			// Get POST data.
+			$data = $this->params()->fromPost();
+
+			// Fill form with data.
+			$editForm->setData($data);
+			if ($editForm->isValid()) {
+
+				// Get validated form data.
+				$data = $editForm->getData();
+
+				// Use post manager service to add new post to database.
+//				$this->postManager->updatePost($post, $data);
+
+				// Redirect the user to "admin" page.
+//				return $this->redirect()->toRoute('posts', ['action'=>'admin']);
+			}
+		}
+
+		$editForm->setData($editData[0]);
+
         return new ViewModel([
 			'editForm' => $editForm,
 			'edit' => $this->edit,

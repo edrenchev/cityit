@@ -45,3 +45,13 @@
 .list-data th sup {
     vertical-align: text-top;
 }
+
+.edit-table {
+}
+.edit-table tr td {
+    text-align: left;
+    padding: 5px 3px;
+}
+.edit-table tr td:first-child {
+    text-align: right;
+}
