@@ -27,6 +27,11 @@ return [
             Controller\MenuController::class => Factory\MenuControllerFactory::class,
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+            Service\AdminService::class => Factory\AdminServiceFactory::class,
+        ],
+    ],
     'session_containers' => [
         'Admin'
     ],

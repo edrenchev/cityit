@@ -8,6 +8,7 @@
 
 namespace Admin\Factory;
 
+use Admin\Service\AdminService;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Admin\Controller\MenuController;
@@ -22,7 +23,9 @@ class MenuControllerFactory {
         // The $container variable is the service manager.
         $sessionContainer = $container->get('Admin');
 
+        $adminService = $container->get(AdminService::class);
+
         // Instantiate the controller and inject dependencies
-        return new MenuController($entityManager, $config['site_config'], $sessionContainer);
+        return new MenuController($entityManager, $config['site_config'], $sessionContainer, $adminService);
     }
 }

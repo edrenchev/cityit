@@ -4,6 +4,7 @@ namespace Admin\Controller;
 use Admin\Entity\MenuLng;
 use Admin\Form\EditForm;
 use Admin\Paginator\Adapter;
+use Admin\Service\AdminService;
 use Libs\Admin\Helper;
 use Libs\Admin\ListTable;
 use Libs\Admin\SessionHelper;
@@ -18,6 +19,13 @@ class MenuController extends AbstractActionController {
 
     private $entityManager;
     private $siteConfig;
+
+    /**
+     * Post manager.
+     * @var AdminService
+     */
+    private $adminService;
+
 
     public $model = [
         'pid' => [
@@ -208,10 +216,11 @@ class MenuController extends AbstractActionController {
      */
     private $sessionContainer;
 
-    public function __construct($entityManager, $siteConfig, $sessionContainer) {
+    public function __construct($entityManager, $siteConfig, $sessionContainer, $adminService) {
         $this->entityManager = $entityManager;
         $this->siteConfig = $siteConfig;
         $this->sessionContainer = $sessionContainer;
+        $this->adminService = $adminService;
     }
 
     public function indexAction() {
@@ -264,7 +273,7 @@ class MenuController extends AbstractActionController {
 //        $listTable = new ListTable($thead, $orders, $result, 'menu', '', '');
         $listTable = new ListTable($this->model, $this->list, SessionHelper::getOrdersData($this->sessionContainer, static::class), $paginator, $this->siteConfig['languages'], 'menu', '', '', 25, $this->url()->fromRoute('menu'));
 
-        return new ViewModel([
+        $view = new ViewModel([
             'listTable' => $listTable,
             'searchForm' => $searchForm,
             'searchModel' => $this->searchModel,
@@ -273,10 +282,38 @@ class MenuController extends AbstractActionController {
             'paginator' => $paginator,
             'routeName' => 'menu',
         ]);
+        return $view->setTemplate('admin/admin/index');
     }
 
     public function addAction() {
-        return new ViewModel();
+        $editForm = new EditForm($this->model, $this->edit, $this->siteConfig['languages']);
+
+        if ($this->getRequest()->isPost()) {
+
+            // Get POST data.
+            $data = $this->params()->fromPost();
+
+            // Fill form with data.
+            $editForm->setData($data);
+            if ($editForm->isValid()) {
+
+                // Get validated form data.
+                $data = $editForm->getData();
+                unset($data['save']);
+
+                $recordId = $this->adminService->insert($data, Menu::class);
+
+                // Redirect the user to "admin" page.
+                return $this->redirect()->toRoute('menu', ['action' => 'edit', 'id' => $recordId]);
+            }
+        }
+
+        $view = new ViewModel([
+            'editForm' => $editForm,
+            'edit' => $this->edit,
+            'languages' => $this->siteConfig['languages'],
+        ]);
+        return $view->setTemplate('admin/admin/add');
     }
 
     public function editAction() {
@@ -304,41 +341,21 @@ class MenuController extends AbstractActionController {
                 $data = $editForm->getData();
                 unset($data['save']);
 
-                $prepareData = [];
-                foreach ($data as $key => $value) {
-                    $invertTransoformField = Helper::inverseTransformField($key);
-                    $prepareData[$invertTransoformField['table']][$invertTransoformField['column']] = $value;
-                }
-
-                foreach ($prepareData as $table => $item) {
-                    if ($table == 't') {
-                        $menu = $this->entityManager->getRepository(Menu::class)->findOneBy(['id'=>$recordId]);
-                        $menu->setOptions($item);
-                        $this->entityManager->persist($menu);
-                        $this->entityManager->flush();
-                    } elseif (isset($this->siteConfig['languages'][$table])) {
-                        $menuLng = $this->entityManager->getRepository(MenuLng::class)->findOneBy(['mid'=>$recordId, 'lng'=>$table]);
-                        $menuLng->setOptions($item);
-                        $this->entityManager->persist($menuLng);
-                        $this->entityManager->flush();
-                    }
-                }
-
-                // Use post manager service to add new post to database.
-//				$this->postManager->updatePost($post, $data);
+                $recordId = $this->adminService->update($recordId, $data, Menu::class);
 
                 // Redirect the user to "admin" page.
-				return $this->redirect()->toRoute('menu', ['action'=>'edit', 'id'=>$recordId]);
+                return $this->redirect()->toRoute('menu', ['action' => 'edit', 'id' => $recordId]);
             }
         }
 
         $editForm->setData($editData[0]);
 
-        return new ViewModel([
+        $view = new ViewModel([
             'editForm' => $editForm,
             'edit' => $this->edit,
             'languages' => $this->siteConfig['languages'],
         ]);
+        return $view->setTemplate('admin/admin/add');
     }
 
     public function deleteAction() {

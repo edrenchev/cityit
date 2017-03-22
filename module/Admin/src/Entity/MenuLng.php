@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="menu_lng")
  */
-class MenuLng {
+class MenuLng extends AdminEntity {
 
     /**
      * @ORM\Id
@@ -259,19 +259,4 @@ class MenuLng {
     public function setPosBodyHtml($posBodyHtml) {
         $this->posBodyHtml = $posBodyHtml;
     }
-
-    public function setOptions(array $options) {
-        $_classMethods = get_class_methods($this);
-        foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
-            if (in_array($method, $_classMethods)) {
-                $this->$method($value);
-            } else {
-                throw new \Exception('Invalid method name: ' . $method);
-            }
-        }
-        return $this;
-    }
-
-
 }

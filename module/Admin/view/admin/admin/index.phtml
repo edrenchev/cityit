@@ -3,7 +3,7 @@
 <div class="admin-content-wrap">
     <?php
 
-    echo $this->partial('admin/partials/searchForm', [
+    echo $this->partial('admin/admin/searchForm', [
         'searchList' => $this->searchList,
         'searchForm' => $this->searchForm,
         'languages' => $this->languages,
@@ -12,7 +12,7 @@
     ?>
 
     <form action="" method="POST">
-        <?= $this->paginationControl($paginator, 'Sliding', 'admin/partials/paginator', ['route' => $this->routeName, 'ipp'=>$paginator->getItemCountPerPage()]) ?>
+        <?= $this->paginationControl($paginator, 'Sliding', 'admin/admin/paginator', ['route' => $this->routeName, 'ipp'=>$paginator->getItemCountPerPage()]) ?>
         <?= $listTable->getTableHtml() ?>
     </form>
 
