@@ -49,5 +49,12 @@ $(document).ready(function () {
         doAction(this, 'addItemsPerPage', val);
     });
 
-
+    $('.list-data tbody input:checkbox').change(function () {
+        if ($(this).is(':checked')) {
+            $(this).closest('tr').addClass('marked');
+        } else {
+            $(this).closest('tr').removeClass('marked');
+        }
+    });
 });
+

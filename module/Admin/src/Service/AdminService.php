@@ -9,6 +9,7 @@
 
 namespace Admin\Service;
 
+use Admin\Entity\MenuLng;
 use Libs\Admin\Helper;
 
 class AdminService {
@@ -71,6 +72,12 @@ class AdminService {
                 $this->entityManager->persist($t);
             } elseif (isset($this->siteConfig['languages'][$table])) {
                 $tLng = $this->entityManager->getRepository("{$entityName}Lng")->findOneBy(['mid' => $recordId, 'lng' => $table]);
+                if($tLng === null) {
+                    $className = "{$entityName}Lng";
+                    $tLng = new $className();
+                    $tLng->setMid($t);
+                    $tLng->setLng($table);
+                }
                 $tLng->setOptions($item);
                 $this->entityManager->persist($tLng);
             }

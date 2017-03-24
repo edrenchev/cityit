@@ -258,7 +258,7 @@ class MenuController extends AbstractActionController {
             }
         }
 
-        echo '<pre>' . print_r(SessionHelper::getSearchData($this->sessionContainer, static::class), true) . '</pre>';
+//        echo '<pre>' . print_r(SessionHelper::getSearchData($this->sessionContainer, static::class), true) . '</pre>';
 
         //TODO doctrine 2 partial!!!!!
         //TODO sled tova menu da go prevarna v asociativen masiv!!!!!

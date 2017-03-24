@@ -1,6 +1,6 @@
 <div class="search-filter">
     <div class="title">Search Filter</div>
-    <div class="fields">
+
         <?php
         $tr = [];
         if (!empty($this->searchList)) {
@@ -21,11 +21,14 @@
             }
 
             echo $this->form()->openTag($this->searchForm);
+            echo '<div class="fields">';
             echo '<table cellpadding="0" cellspacing="0"><tr>' . implode('</tr><tr>', $tr) . '</tr></table>';
+            echo '</div>';
+            echo '<div class="footer">';
             echo $this->formElement($this->searchForm->get('submit'));
             echo $this->formElement($this->searchForm->get('clear'));
+            echo '</div>';
             echo $this->form()->closeTag();
         }
         ?>
-    </div>
 </div>

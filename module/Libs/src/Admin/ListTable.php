@@ -62,18 +62,27 @@ class ListTable {
     }
 
     public function setTableHead($head) {
-        $this->tableHead['_selectId'] = <<<EOD
+        $this->tableHead['_selectId'] = [
+            'lng' => '',
+            'value' => <<<EOD
 <input type="checkbox" name="allChecked" onclick="$('input[type=checkbox][name^=\'checked\']').prop('checked', this.checked).trigger('change')"/>
-EOD;
-        $this->tableHead['_editId'] = 'Edit';
+EOD
+        ];
+        $this->tableHead['_editId'] = [
+            'lng'=>'',
+            'value'=> 'Edit',
+        ];
         foreach ($head as $k => $item) {
             $tFields = Helper::transformFiled($item, $this->languages);
             foreach ($tFields as $lng => $tField) {
                 if ($this->model[$item]['type'] == 'enum') {
                     $this->mapData[$tField] = $this->model[$item]['options'];
                 }
-                $lngStr = $lng != '0' ? " {$lng}" : '';
-                $this->tableHead[$tField] = $this->model[$item]['title'] . $lngStr;
+                $lngStr = $lng != '0' ? "{$lng}" : '';
+                $this->tableHead[$tField] = [
+                    'lng' => $lngStr,
+                    'value' => $this->model[$item]['title'],
+                ];
             }
         }
     }
@@ -117,12 +126,16 @@ EOD;
             }
             if ($key == '_selectId' || $key == '_editId') {
                 $tableHeadHtml .= <<<EOD
-<th>{$item}</th>
+<th><span>{$item['value']}</span></th>
 EOD;
                 continue;
             }
+            $thClass = '';
+            if(!empty($item['lng'])) {
+                $thClass = " class='lng {$item['lng']}'";
+            }
             $tableHeadHtml .= <<<EOD
-<th data-order-column="{$key}" data-order="{$order}"{$orderPosition}>{$item}</th>
+<th data-order-column="{$key}" data-order="{$order}"{$orderPosition}{$thClass}><span>{$item['value']}</span></th>
 EOD;
         }
 
@@ -131,11 +144,12 @@ EOD;
 
     public function getTableDataHtml() {
         $tableDataHtml = '';
+        $trCnt = 1;
         foreach ($this->getTableData() as $item) {
             $tmp = '';
             foreach (array_keys($this->getTableHead()) as $key) {
                 if ($key == '_editId') {
-                    $value = "<a href='{$this->basicUrl}/edit/{$item[$key]}'>Edit</a>";
+                    $value = "<a href='{$this->basicUrl}/edit/{$item[$key]}' class='edit-link'>Edit</a>";
                 } elseif ($key == '_selectId') {
                     $value = "<input type='checkbox' name='checked[{$item[$key]}]' />";
                 } elseif (isset($this->mapData[$key])) {
@@ -145,13 +159,20 @@ EOD;
                 }
                 $tmp .= '<td>' . $value . '</td>';
             }
-            $tableDataHtml .= "<tr>{$tmp}</tr>";
+
+            $trClass = 'odd';
+            if ($trCnt % 2 == 0) {
+                $trClass = 'even';
+            }
+            $trCnt += 1;
+
+            $tableDataHtml .= "<tr class='{$trClass}'>{$tmp}</tr>";
         }
         return $tableDataHtml;
     }
 
     public function getTableHtml() {
-        return '<table class="list-data"  cellpadding="0" cellspacing="0">' . $this->getTableHeadHtml() . $this->getTableDataHtml() . '</table>';
+        return '<table class="list-data"  cellpadding="0" cellspacing="0"><thead>' . $this->getTableHeadHtml() . '</thead><tbody>' . $this->getTableDataHtml() . '</tbody>' . '</table>';
     }
 
 

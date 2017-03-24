@@ -1,3 +1,29 @@
+html {
+    font-size: 62.5%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: sans-serif;
+    color: #444;
+    font-size: 1.4rem;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #235a81;
+    cursor: pointer;
+    outline: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #235a81;
+}
+
 .admin-content-wrap {
     display: inline-block;
     min-width: 600px;
@@ -11,23 +37,102 @@
 .search-filter, .pagination-control, .list-data {
     margin: 20px 0;
 }
+
+.search-filter {
+    display: inline-block;
+}
+
+.search-filter {
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border: 1px solid #aaa;
+    background-color: #fff;
+}
+
+.search-filter .title, .edit-form .title {
+    font-weight: bold;
+    color: #444;
+    padding: 5px 10px;
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#cccccc));
+    background: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+    background: -moz-linear-gradient(top, #eeeeee, #cccccc);
+    background: -ms-linear-gradient(top, #eeeeee, #cccccc);
+    background: -o-linear-gradient(top, #eeeeee, #cccccc);
+}
+
+.search-filter .fields {
+    padding: 5px 10px;
+}
+
 .search-filter table td {
     text-align: left;
+    padding: 5px 3px;
+}
+
+.search-filter .footer, .edit-form .footer {
+    text-align: right;
+    background: #D3DCE3;
+}
+
+.search-filter .footer input, .edit-form .footer input {
+    margin: 6px 10px;
+    border: 1px solid #aaa;
+    padding: 3px 7px;
+    color: #111;
+    font-weight: bold;
+    text-decoration: none;
+    background: #ddd;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    text-shadow: 0 1px 0 #fff;
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#d8d8d8));
+    background: -webkit-linear-gradient(top, #f8f8f8, #d8d8d8);
+    background: -moz-linear-gradient(top, #f8f8f8, #d8d8d8);
+    background: -ms-linear-gradient(top, #f8f8f8, #d8d8d8);
+    background: -o-linear-gradient(top, #f8f8f8, #d8d8d8);
+}
+
+.search-filter .footer input:hover, .edit-form .footer input:hover {
+    position: relative;
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
+    background: -webkit-linear-gradient(top, #fff, #ddd);
+    background: -moz-linear-gradient(top, #fff, #ddd);
+    background: -ms-linear-gradient(top, #fff, #ddd);
+    background: -o-linear-gradient(top, #fff, #ddd);
+    cursor: pointer;
 }
 
 .pagination-control {
     width: 100%;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#cccccc));
+    background: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+    background: -moz-linear-gradient(top, #eeeeee, #cccccc);
+    background: -ms-linear-gradient(top, #eeeeee, #cccccc);
+    background: -o-linear-gradient(top, #eeeeee, #cccccc);
 }
-.pagination-control td{
+
+.pagination-control td {
     width: 33.333%;
+    padding: 7px 5px;
 }
-.pagination-control .left{
+
+.pagination-control .left {
     text-align: left;
 }
-.pagination-control .center{
+
+.pagination-control .center {
     text-align: center;
 }
-.pagination-control .right{
+
+.pagination-control .right {
     text-align: right;
 }
 
@@ -35,23 +140,169 @@
     width: 50px;
 }
 
+.pagination-control input, .pagination-control select {
+    height: 21px;
+    box-sizing: border-box;
+}
+
 .list-data {
     border-collapse: collapse;
 }
+
 .list-data th, .list-data td {
-    border: 1px solid #000;
-    padding: 5px 2px;
+    border: 1px solid #aaa;
+    padding: 5px 3px;
+    text-shadow: 0 1px 0 #fff;
+    font-size: 1.4rem;
+    color: #000;
 }
+
+.list-data th {
+    font-weight: bold;
+    text-decoration: none;
+    color: #235a81;
+    cursor: pointer;
+    outline: none;
+    background: #f3f3f3;
+    background-image: url(./themes/svg_gradient.php?from=ffffff&to=cccccc);
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#cccccc));
+    background: -webkit-linear-gradient(top, #ffffff, #cccccc);
+    background: -moz-linear-gradient(top, #ffffff, #cccccc);
+    background: -ms-linear-gradient(top, #ffffff, #cccccc);
+    background: -o-linear-gradient(top, #ffffff, #cccccc);
+}
+
+.list-data th:hover span {
+    text-decoration: underline;
+    color: #235a81;
+}
+
 .list-data th sup {
     vertical-align: text-top;
+    font-size: 1.1rem;
+}
+.list-data th.lng:after {
+    content: "";
+    vertical-align: middle;
+    display: inline-block;
+    width: 18px;
+    height: 16px;
+}
+.list-data th.lng.bg_BG:after {
+    background: url(../img/flag_bg.png) 100% -2px no-repeat;
+}
+.list-data th.lng.en_GB:after {
+    background: url(../img/flag_en.png) 100% -2px no-repeat;
+}
+
+.list-data th:hover sup {
+    text-decoration: none;
+    color: #235a81;
+}
+
+.list-data tbody .odd {
+    background: #fff;
+}
+
+.list-data tbody .even {
+    background: #DFDFDF;
+}
+
+.list-data tbody .odd:not(.nopointer):hover, .list-data tbody .even:not(.nopointer):hover, .list-data tbody .hover:not(.nopointer) {
+    /*.list-data .tbody .even td {*/
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ced6df), to(#b6c6d7));
+    background: -webkit-linear-gradient(top, #ced6df, #b6c6d7);
+    background: -moz-linear-gradient(top, #ced6df, #b6c6d7);
+    background: -ms-linear-gradient(top, #ced6df, #b6c6d7);
+    background: -o-linear-gradient(top, #ced6df, #b6c6d7);
+    color: #000;
+}
+
+.list-data tbody td.marked:not(.nomarker), .list-data tbody tr.marked:not(.nomarker) td, .list-data tbody tr.marked:not(.nomarker) th, .list-data tbody tr.marked:not(.nomarker) {
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ced6df), to(#b6c6d7));
+    background: -webkit-linear-gradient(top, #ced6df, #b6c6d7);
+    background: -moz-linear-gradient(top, #ced6df, #b6c6d7);
+    background: -ms-linear-gradient(top, #ced6df, #b6c6d7);
+    background: -o-linear-gradient(top, #ced6df, #b6c6d7);
+    color: #000;
+}
+
+.list-data .edit-link {
+    display: inline-block;
+    height: 16px;
+    padding-left: 18px;
+    background-image: url(../img/sprites.png);
+    background-position: 0 -224px;
+    background-repeat: no-repeat;
+}
+
+.edit-form {
+    display: inline-block;
+    border: 1px solid #aaa;
+    min-width: 800px;
+}
+
+.edit-form .errors {
+    border-color: #333;
+    margin: 7px;
+    border: 1px solid maroon;
+    color: #000;
+    background: pink;
+    background-repeat: no-repeat;
+    background-position: 10px 50%;
+    padding: 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0 1px 1px #fff inset;
+    -webkit-box-shadow: 0 1px 1px #fff inset;
+    box-shadow: 0 1px 1px #fff inset;
+}
+
+.edit-form .fields {
+    border-top: 1px solid #DFDFDF;
 }
 
 .edit-table {
+    width: 100%;
 }
 .edit-table tr td {
     text-align: left;
-    padding: 5px 3px;
+    padding: 6px 3px;
 }
+
+.edit-table tr td:first-child {
+    width: 200px;
+}
+
+.edit-table tr:nth-child(2n) {
+    background: #DFDFDF;
+}
+
+.edit-table input,.edit-table select, .edit-table textarea {
+    border: 1px solid #7c7c7c;
+    background: #fff;
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.edit-table input {
+    height: 25px;
+}
+
+.edit-table tr:hover {
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ced6df), to(#b6c6d7));
+    background: -webkit-linear-gradient(top, #ced6df, #b6c6d7);
+    background: -moz-linear-gradient(top, #ced6df, #b6c6d7);
+    background: -ms-linear-gradient(top, #ced6df, #b6c6d7);
+    background: -o-linear-gradient(top, #ced6df, #b6c6d7);
+    color: #000;
+}
+
 .edit-table tr td:first-child {
     text-align: right;
 }
