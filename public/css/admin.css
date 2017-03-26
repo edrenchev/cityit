@@ -12,6 +12,26 @@ body {
     padding: 0;
 }
 
+html, body {
+    background:	#666;
+    width:		100%;
+    height:		100%;
+    padding:	0;
+    margin:		0;
+    overflow:	auto; /* when page gets too small */
+}
+#container {
+    background:	#999;
+    height:		100%;
+    margin:		0 auto;
+    width:		100%;
+    min-width:	700px;
+    _width:		700px; /* min-width for IE6 */
+}
+.pane {
+    display:	none; /* will appear when layout inits */
+}
+
 a {
     text-decoration: none;
     color: #235a81;
@@ -24,6 +44,43 @@ a:hover {
     color: #235a81;
 }
 
+.header {
+    background: #888;
+    text-shadow: 0 1px 0 #000;
+    color: #fff;
+}
+.header table {
+    width: 100%;
+}
+.header table td {
+    padding: 4px 2px;
+    vertical-align: middle;
+}
+.header table .col-1 {
+    text-align: left;
+}
+.header table .col-2 {
+    text-align: center;
+}
+.header table .col-3 {
+    text-align: right;
+}
+
+.wrap {
+    overflow: hidden;
+}
+.wrap > div {
+    float: left;
+    box-sizing: border-box;
+}
+.wrap .menu {
+    width: 15%;
+}
+.wrap .content {
+    width: 200px;
+    width: 85%;
+}
+
 .admin-content-wrap {
     display: inline-block;
     min-width: 600px;
@@ -34,7 +91,7 @@ a:hover {
     /*width: 100%;*/
 }
 
-.search-filter, .pagination-control, .list-data {
+.search-filter, .list-data-wrap {
     margin: 20px 0;
 }
 
@@ -75,7 +132,7 @@ a:hover {
     background: #D3DCE3;
 }
 
-.search-filter .footer input, .edit-form .footer input {
+.search-filter .footer button, .edit-form .footer input {
     margin: 6px 10px;
     border: 1px solid #aaa;
     padding: 3px 7px;
@@ -95,7 +152,7 @@ a:hover {
     background: -o-linear-gradient(top, #f8f8f8, #d8d8d8);
 }
 
-.search-filter .footer input:hover, .edit-form .footer input:hover {
+.search-filter .footer button:hover, .edit-form .footer input:hover {
     position: relative;
     background-size: 100% 100%;
     background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
@@ -105,12 +162,34 @@ a:hover {
     background: -o-linear-gradient(top, #fff, #ddd);
     cursor: pointer;
 }
+.search-filter .footer .search:before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 4px;
+    background-image: url(../img/sprites.png);
+    background-repeat: no-repeat;
+    background-position: 0 -880px;
+}
+.search-filter .footer .clear:before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 4px;
+    background-image: url(../img/sprites.png);
+    background-repeat: no-repeat;
+    background-position: 0 -240px;
+}
 
 .pagination-control {
     width: 100%;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
+    /*border-radius: 5px;*/
+    /*-webkit-border-radius: 5px;*/
+    /*-moz-border-radius: 5px;*/
     background-size: 100% 100%;
     background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#cccccc));
     background: -webkit-linear-gradient(top, #eeeeee, #cccccc);
@@ -138,6 +217,7 @@ a:hover {
 
 .pagination-control input {
     width: 50px;
+    margin-left: 10px;
 }
 
 .pagination-control input, .pagination-control select {
@@ -145,6 +225,103 @@ a:hover {
     box-sizing: border-box;
 }
 
+.pagination-control .first, .pagination-control .previous, .pagination-control .next, .pagination-control .last {
+    padding: 7px 5px;
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+.pagination-control .first:hover, .pagination-control .previous:hover, .pagination-control .next:hover, .pagination-control .last:hover {
+    color: #fff;
+    cursor: pointer;
+    text-shadow: none;
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(#555555));
+    background: -webkit-linear-gradient(top, #333333, #555555);
+    background: -moz-linear-gradient(top, #333333, #555555);
+    background: -ms-linear-gradient(top, #333333, #555555);
+    background: -o-linear-gradient(top, #333333, #555555);
+}
+
+.list-data-wrap .buttons {
+    overflow: hidden;
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#dcdcdc));
+    background: -webkit-linear-gradient(top, #ffffff, #dcdcdc);
+    background: -moz-linear-gradient(top, #ffffff, #dcdcdc);
+    background: -ms-linear-gradient(top, #ffffff, #dcdcdc);
+    background: -o-linear-gradient(top, #ffffff, #dcdcdc);
+    border-top: 1px solid #aaa;
+    border-bottom: 1px solid #ccc;
+}
+
+.list-data-wrap .buttons ul {
+    font-weight: bold;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.list-data-wrap .buttons li {
+    border-right: 1px solid #fff;
+    border-left: 1px solid #ccc;
+    float: left;
+    margin: 0;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+.list-data-wrap .buttons li:hover {
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e5e5e5));
+    background: -webkit-linear-gradient(top, #ffffff, #e5e5e5);
+    background: -moz-linear-gradient(top, #ffffff, #e5e5e5);
+    background: -ms-linear-gradient(top, #ffffff, #e5e5e5);
+    background: -o-linear-gradient(top, #ffffff, #e5e5e5);
+}
+
+.list-data-wrap .buttons a {
+    display: block;
+    text-decoration: none;
+    padding: 8px;
+    text-shadow: 0 1px 0 #fff;
+}
+
+.list-data-wrap .buttons li .add-record:before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 4px;
+    background-image: url(../img/sprites.png);
+    background-repeat: no-repeat;
+    background-position: 0 -512px;
+}
+
+.list-data-wrap .buttons .delete-btn {
+    display: block;
+    border: 0;
+    padding: 8px;
+    margin: 0;
+    background: none;
+    text-shadow: 0 1px 0 #fff;
+    color: #235a81;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.list-data-wrap .buttons li .delete-btn:before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 4px;
+    background-image: url(../img/sprites.png);
+    background-repeat: no-repeat;
+    background-position: 0 -208px;
+}
 .list-data {
     border-collapse: collapse;
 }
@@ -173,6 +350,15 @@ a:hover {
     background: -o-linear-gradient(top, #ffffff, #cccccc);
 }
 
+.list-data th:hover {
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e5e5e5));
+    background: -webkit-linear-gradient(top, #ffffff, #e5e5e5);
+    background: -moz-linear-gradient(top, #ffffff, #e5e5e5);
+    background: -ms-linear-gradient(top, #ffffff, #e5e5e5);
+    background: -o-linear-gradient(top, #ffffff, #e5e5e5);
+}
+
 .list-data th:hover span {
     text-decoration: underline;
     color: #235a81;
@@ -182,23 +368,29 @@ a:hover {
     vertical-align: text-top;
     font-size: 1.1rem;
 }
-.list-data th.lng:after {
+
+.list-data th.lng:after, .search-filter .lng  .value-lng:after, .edit-form .lng .value-lng:after{
     content: "";
     vertical-align: middle;
     display: inline-block;
     width: 18px;
     height: 16px;
 }
-.list-data th.lng.bg_BG:after {
+
+.list-data th.lng.bg_BG:after, .search-filter .lng.bg_BG  .value-lng:after, .edit-form .lng.bg_BG  .value-lng:after {
     background: url(../img/flag_bg.png) 100% -2px no-repeat;
 }
-.list-data th.lng.en_GB:after {
+
+.list-data th.lng.en_GB:after, .search-filter .lng.en_GB  .value-lng:after, .edit-form .lng.en_GB  .value-lng:after {
     background: url(../img/flag_en.png) 100% -2px no-repeat;
 }
 
 .list-data th:hover sup {
     text-decoration: none;
     color: #235a81;
+}
+.list-data th .value-lng, .search-filter .value-lng {
+    font-size: 12px;
 }
 
 .list-data tbody .odd {
@@ -269,6 +461,7 @@ a:hover {
 .edit-table {
     width: 100%;
 }
+
 .edit-table tr td {
     text-align: left;
     padding: 6px 3px;
@@ -282,13 +475,14 @@ a:hover {
     background: #DFDFDF;
 }
 
-.edit-table input,.edit-table select, .edit-table textarea {
+.edit-table input, .edit-table select, .edit-table textarea {
     border: 1px solid #7c7c7c;
     background: #fff;
     padding: 4px;
     width: 100%;
     box-sizing: border-box;
 }
+
 .edit-table input {
     height: 25px;
 }
@@ -305,4 +499,9 @@ a:hover {
 
 .edit-table tr td:first-child {
     text-align: right;
+}
+
+.nested-list-content.selected {
+    color: #2ea8e5;
+    background: #fff;
 }

@@ -10,6 +10,7 @@
 namespace Admin\Service;
 
 use Admin\Entity\MenuLng;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Libs\Admin\Helper;
 
 class AdminService {
@@ -85,6 +86,18 @@ class AdminService {
         $this->entityManager->flush();
 
         return $t->getId();
+    }
+
+    public function delete($ids, $entityName) {
+        if(!empty($ids)) {
+            $qb = $this->entityManager->createQueryBuilder();
+            $qb->delete($entityName, 't')->where("t.id IN ({$ids})");
+            $qb->getQuery()->execute();
+
+            $qb = $this->entityManager->createQueryBuilder();
+            $qb->delete("{$entityName}Lng", 'tLng')->where("tLng.mid IN ($ids)");
+            $qb->getQuery()->execute();
+        }
     }
 
 }

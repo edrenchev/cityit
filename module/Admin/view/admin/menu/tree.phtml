@@ -8,9 +8,17 @@ $this->headScript()->prependFile($this->basePath('nestable/jquery.nestable.js'))
 <div class="row">
     <div class="col-md-8">
         <div class="well">
-            <p class="lead"><a href="#newModal" class="btn btn-default pull-right" data-toggle="modal"><span
-                        class="glyphicon glyphicon-plus-sign"></span> new menu item</a> Menu:</p>
+            <form id="add-menu" action="<?= $this->url('menu', ['action'=>'add']) ?>">
+            <p class="lead">
 
+                <button type="button" id="add-child" href="<?= $this->url('menu', ['action' => 'add']) ?>" class="btn btn-default pull-right"><span
+                        class="glyphicon glyphicon-plus-sign"></span> Add as child of</button>
+                <span class="pull-right" style="padding-left: 15px;">&nbsp;</span>
+                <button type="button" id="add-after" href="<?= $this->url('menu', ['action' => 'add']) ?>" class="btn btn-default pull-right"><span
+                        class="glyphicon glyphicon-plus-sign"></span> Add after</button>
+
+            Menu:</p>
+            </form>
             <div class="dd" id="nestable">
                 <?= $menu ?>
             </div>
@@ -62,4 +70,17 @@ $this->headScript()->prependFile($this->basePath('nestable/jquery.nestable.js'))
             }
         });
     });
+    $('.nested-list-content .selected').click(function (e) {
+        e.preventDefault();
+        $('.nested-list-content.selected').removeClass('selected');
+        $(this).parents('.nested-list-content').toggleClass('selected');
+    });
+
+    $('#add-after').click(function(e){
+        doAction2('#add-menu', 'addAfter', $('.nested-list-content.selected .selected').attr('data-id'));
+    });
+    $('#add-child').click(function(e){
+        doAction2('#add-menu', 'addChild', $('.nested-list-content.selected .selected').attr('data-id'));
+    });
+
 </script>

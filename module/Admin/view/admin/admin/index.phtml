@@ -12,8 +12,19 @@
     ?>
 
     <form action="" method="POST">
-        <?= $this->paginationControl($paginator, 'Sliding', 'admin/admin/paginator', ['route' => $this->routeName, 'ipp'=>$paginator->getItemCountPerPage()]) ?>
-        <?= $listTable->getTableHtml() ?>
+        <div class="list-data-wrap">
+            <div class="buttons">
+                <ul>
+                    <li><a href="<?= $this->url($this->routeName, ['action' => 'add']) ?>" title="Add record"
+                           class="add-record">Add record</a></li>
+                    <li>
+                        <button type="submit" name="do[delete]" value="delete" class="delete-btn">Delete</button>
+                    </li>
+                </ul>
+            </div>
+            <?= $this->paginationControl($paginator, 'Sliding', 'admin/admin/paginator', ['route' => $this->routeName, 'ipp' => $paginator->getItemCountPerPage()]) ?>
+            <?= $listTable->getTableHtml() ?>
+        </div>
     </form>
 
 </div>

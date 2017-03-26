@@ -19,20 +19,16 @@ function createSelectOptions($selectedVal, array $options) {
             <td class="left">
                 <!-- First page link -->
                 <?php if (isset($this->previous)): ?>
-                    <a href="<?= $this->url($this->route, [], ['query' => ['page' => $this->first]]); ?>">
-                        First
-                    </a> |
-                <?php else: ?>
-                    <span class="disabled">First</span> |
+                    <a class="first" href="<?= $this->url($this->route, [], ['query' => ['page' => $this->first]]); ?>">
+                        <<
+                    </a>
                 <?php endif; ?>
 
                 <!-- Previous page link -->
                 <?php if (isset($this->previous)): ?>
-                    <a href="<?= $this->url($this->route, [], ['query' => ['page' => $this->previous]]); ?>">
-                        &lt; Previous
-                    </a> |
-                <?php else: ?>
-                    <span class="disabled">&lt; Previous</span> |
+                    <a class="previous" href="<?= $this->url($this->route, [], ['query' => ['page' => $this->previous]]); ?>">
+                        <
+                    </a>
                 <?php endif; ?>
 
                 <input type="number" name="pageItem" value="<?= $this->current ?>"/>
@@ -40,20 +36,16 @@ function createSelectOptions($selectedVal, array $options) {
 
                 <!-- Next page link -->
                 <?php if (isset($this->next)): ?>
-                    <a href="<?= $this->url($this->route, [], ['query' => ['page' => $this->next]]); ?>">
-                        Next &gt;
-                    </a> |
-                <?php else: ?>
-                    <span class="disabled">Next &gt;</span> |
+                    <a class="next" href="<?= $this->url($this->route, [], ['query' => ['page' => $this->next]]); ?>">
+                        >
+                    </a>
                 <?php endif; ?>
 
                 <!-- Last page link -->
                 <?php if (isset($this->next)): ?>
-                    <a href="<?= $this->url($this->route, [], ['query' => ['page' => $this->last]]); ?>">
-                        Last
+                    <a class="last" href="<?= $this->url($this->route, [], ['query' => ['page' => $this->last]]); ?>">
+                        >>
                     </a>
-                <?php else: ?>
-                    <span class="disabled">Last</span>
                 <?php endif; ?>
             </td>
             <td class="center">

@@ -1,41 +1,48 @@
 <div class="edit-form">
     <div class="title">Edit</div>
-        <?php
-        $tr = [];
-        $errors = [];
-        if (!empty($this->edit)) {
-            foreach ($this->edit as $key => $item) {
-                $field = '';
-                if (is_array($item)) {
-                    $field = $key;
-                } else {
-                    $field = $item;
-                }
-                $tFields = \Libs\Admin\Helper::transformFiled($field, $this->languages);
-                foreach ($tFields as $tField) {
-                    $label = $this->formLabel($this->editForm->get($tField));
-                    $error = $this->formElementErrors($this->editForm->get($tField));
-                    if(!empty($error)) {
-                        $errors[] = $label . $this->formElementErrors($this->editForm->get($tField));
-                    }
-                    $td = [];
-                    $td[] = '<td>' . $label . '</td>';
-                    $td[] = '<td>' . $this->formElement($this->editForm->get($tField)) . '</td>';
-                    $tr[] = implode('', $td);
-                }
+    <?php
+    $tr = '';
+    $errors = [];
+    if (!empty($this->edit)) {
+        foreach ($this->edit as $key => $item) {
+            $field = '';
+            if (is_array($item)) {
+                $field = $key;
+            } else {
+                $field = $item;
             }
+            $tFields = \Libs\Admin\Helper::transformFiled($field, $this->languages);
+            foreach ($tFields as $lng => $tField) {
+                $label = $this->formLabel($this->editForm->get($tField));
+                $error = $this->formElementErrors($this->editForm->get($tField));
+                if (!empty($error)) {
+                    $errors[] = $label . $this->formElementErrors($this->editForm->get($tField));
+                }
+                $td = [];
 
-            if(!empty($errors)) {
-                echo '<div class="errors">' . implode('', $errors) . '</div>';
+                $lngClass = '';
+                if($lng != '0') {
+                    $lngClass = " class='lng {$lng}'";
+                    $td[] = '<td>' . $label . "<span class='value-lng'>({$lng})</span></td>";
+                } else {
+                    $td[] = '<td>' . $label . '</td>';
+                }
+                $td[] = '<td>' . $this->formElement($this->editForm->get($tField)) . '</td>';
+                $tr .= "<tr{$lngClass}>" . implode('', $td) . '</tr>';
             }
-            echo $this->form()->openTag($this->editForm);
-            echo '<div class="fields">';
-            echo '<table cellpadding="0" cellspacing="0" class="edit-table"><tr>' . implode('</tr><tr>', $tr) . '</tr></table>';
-            echo '</div>';
-            echo '<div class="footer">';
-            echo $this->formElement($this->editForm->get('save'));
-            echo '</div>';
-            echo $this->form()->closeTag();
         }
-        ?>
+
+        if (!empty($errors)) {
+            echo '<div class="errors">' . implode('', $errors) . '</div>';
+        }
+        echo $this->form()->openTag($this->editForm);
+        echo '<div class="fields">';
+        echo '<table cellpadding="0" cellspacing="0" class="edit-table"><tr>' . $tr . '</tr></table>';
+        echo '</div>';
+        echo '<div class="footer">';
+        echo $this->formElement($this->editForm->get('save'));
+        echo '</div>';
+        echo $this->form()->closeTag();
+    }
+    ?>
 </div>

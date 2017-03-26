@@ -239,6 +239,9 @@ class MenuController extends AbstractActionController {
                     SessionHelper::addOrders($this->sessionContainer, static::class, $action['addOrder']);
                 } elseif (isset($action['addItemsPerPage'])) {
                     SessionHelper::addItemsPerPage($this->sessionContainer, static::class, $action['addItemsPerPage']);
+                } elseif (isset($action['delete']) && !empty($data['checked'])) {
+                    $deleteIds = implode(',', $data['checked']);
+                    return $this->redirect()->toRoute('menu', ['action' => 'delete', 'id' => $deleteIds]);
                 }
             } else {
                 $data = $this->params()->fromPost();
@@ -303,10 +306,31 @@ class MenuController extends AbstractActionController {
 
                 $recordId = $this->adminService->insert($data, Menu::class);
 
+                $q = $this->entityManager->getConnection()->prepare('SET @ord := 0;UPDATE menu SET ord = (@ord := @ord+1) ORDER BY ord;', $rsm);
+                $q->execute();
+                
                 // Redirect the user to "admin" page.
                 return $this->redirect()->toRoute('menu', ['action' => 'edit', 'id' => $recordId]);
             }
         }
+
+
+        $addAfter = $this->params()->fromQuery('addAfter', -1);
+        $addChild = $this->params()->fromQuery('addChild', -1);
+        if($addAfter > 0) {
+            $menu = $this->entityManager->getRepository(Menu::class)->findOneBy(['id'=>$addAfter]);
+            $editForm->setData([
+                't_pid' => $menu->getPid(),
+                't_ord' => $menu->getOrd() + 0.1,
+            ]);
+        } elseif($addChild > 0) {
+            $editForm->setData([
+                't_pid' => $addChild,
+                't_ord' => 0.1,
+            ]);
+        }
+//        echo '<pre>'.print_r($menu,true).'</pre>';
+//        die();
 
         $view = new ViewModel([
             'editForm' => $editForm,
@@ -343,6 +367,9 @@ class MenuController extends AbstractActionController {
 
                 $recordId = $this->adminService->update($recordId, $data, Menu::class);
 
+                $q = $this->entityManager->getConnection()->prepare('SET @ord := 0;UPDATE menu SET ord = (@ord := @ord+1) ORDER BY ord;', $rsm);
+                $q->execute();
+
                 // Redirect the user to "admin" page.
                 return $this->redirect()->toRoute('menu', ['action' => 'edit', 'id' => $recordId]);
             }
@@ -359,7 +386,11 @@ class MenuController extends AbstractActionController {
     }
 
     public function deleteAction() {
-        return new ViewModel();
+        $ids = $postId = $this->params()->fromRoute('id', -1);
+        if ($ids != -1) {
+            $this->adminService->delete($ids, Menu::class);
+        }
+        return $this->redirect()->toRoute('menu');
     }
 
     public function treeAction() {
@@ -413,8 +444,9 @@ class MenuController extends AbstractActionController {
 	      </div>
 	      <div class='nested-list-content'>{$item->getName()}
 	        <div class='pull-right'>
-	          <a href='edit'>Edit</a> |
-	          <a href='delete'>Delete</a>
+	          <a href='" . $this->url()->fromRoute('menu', ['action'=>'edit', 'id'=>$item->getId()]) . "'>Edit</a> |
+	          <a href='" . $this->url()->fromRoute('menu', ['action'=>'delete', 'id'=>$item->getId()]) . "'>Delete</a> |
+	          <a class='selected' data-id='{$item->getId()}' href='selected'>Seleted</a>
 	        </div>
 	      </div>" . $this->buildMenu($menu, $item->getId()) . "</li>";
             }

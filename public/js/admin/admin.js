@@ -16,6 +16,21 @@ doAction = function (form, ActionId, Params) {
             .form
     ).submit();
 };
+doAction2 = function (form, ActionId, Params) {
+    var prefix = $(form).closest('div[data-formprefix]').attr('data-formprefix');
+    if (typeof(prefix) == 'undefined') {
+        prefix = '';
+    }
+
+    $(
+        $('<input type="hidden" />')
+            .attr('name', ActionId)
+            .appendTo(form)
+            .val(Params)
+            .get(0)
+            .form
+    ).submit();
+};
 
 $(document).ready(function () {
     $('th[data-order-column]').each(function () {
@@ -55,6 +70,16 @@ $(document).ready(function () {
         } else {
             $(this).closest('tr').removeClass('marked');
         }
+    });
+
+    $('button[name$="[delete]"]').on('click', function(event){
+        return confirm("Please confirm delete?");
+    });
+
+    $('[data-toggle]').click(function() {
+        $lng = $(this).attr("data-lng");
+        $lng = '.'+ $lng;
+        $($lng).toggle();
     });
 });
 

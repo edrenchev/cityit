@@ -133,6 +133,7 @@ EOD;
             $thClass = '';
             if(!empty($item['lng'])) {
                 $thClass = " class='lng {$item['lng']}'";
+                $item['value'] = "{$item['value']} <span class='value-lng'>({$item['lng']})</span>";
             }
             $tableHeadHtml .= <<<EOD
 <th data-order-column="{$key}" data-order="{$order}"{$orderPosition}{$thClass}><span>{$item['value']}</span></th>
@@ -147,17 +148,22 @@ EOD;
         $trCnt = 1;
         foreach ($this->getTableData() as $item) {
             $tmp = '';
-            foreach (array_keys($this->getTableHead()) as $key) {
+
+            foreach ($this->getTableHead() as $key=>$tmpItem) {
                 if ($key == '_editId') {
                     $value = "<a href='{$this->basicUrl}/edit/{$item[$key]}' class='edit-link'>Edit</a>";
                 } elseif ($key == '_selectId') {
-                    $value = "<input type='checkbox' name='checked[{$item[$key]}]' />";
+                    $value = "<input type='checkbox' name='checked[{$item[$key]}]' value='{$item[$key]}' />";
                 } elseif (isset($this->mapData[$key])) {
                     $value = htmlspecialchars($this->mapData[$key][$item[$key]]);
                 } else {
                     $value = htmlspecialchars($item[$key]);
                 }
-                $tmp .= '<td>' . $value . '</td>';
+                $tdClass = '';
+                if(!empty($tmpItem['lng'])) {
+                    $tdClass = " class='{$tmpItem['lng']}'";
+                }
+                $tmp .= "<td{$tdClass}>{$value}</td>";
             }
 
             $trClass = 'odd';
@@ -172,7 +178,15 @@ EOD;
     }
 
     public function getTableHtml() {
-        return '<table class="list-data"  cellpadding="0" cellspacing="0"><thead>' . $this->getTableHeadHtml() . '</thead><tbody>' . $this->getTableDataHtml() . '</tbody>' . '</table>';
+        $tHead = $this->getTableHeadHtml();
+        $tBody =  $this->getTableDataHtml();
+        return <<<EOD
+
+<table class="list-data"  cellpadding="0" cellspacing="0">
+    <thead>{$tHead}</thead>
+    <tbody>{$tBody}</tbody>
+</table>
+EOD;
     }
 
 

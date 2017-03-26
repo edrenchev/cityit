@@ -32,7 +32,7 @@ return [
         'validators' => [
             RemoteAddr::class,
             HttpUserAgent::class,
-        ]
+        ],
     ],
     // Session storage configuration.
     'session_storage' => [
@@ -51,6 +51,25 @@ return [
                     'charset' => 'UTF8',
                 ]
             ],
+        ],
+    ],
+
+    'navigation' => [
+        'AdminMenu' => [
+            [
+                'label' => 'Menu',
+                'route' => 'menu',
+            ],
+            [
+                'label' => 'Menu tree',
+                'route' => 'menu',
+                'action' => 'tree'
+            ],
+        ],
+    ],
+    'service_manager' => [
+        'abstract_factories' => [
+            Zend\Navigation\Service\NavigationAbstractServiceFactory::class,
         ],
     ],
 

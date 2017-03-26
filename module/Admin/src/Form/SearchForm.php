@@ -56,7 +56,7 @@ class SearchForm extends Form {
         $tmpArr = [];
         $tmpArr['name'] = $name;
         $tmpArr['attributes']['id'] = $name;
-        $tmpArr['options']['label'] = $elementData['title'] . ' ' . $lng;
+        $tmpArr['options']['label'] = $elementData['title'];
         $tmpArr['type'] = $this->getHtmlElementType($elementData['type']);
         if ($tmpArr['type'] == 'select') {
             $tmpArr['options']['empty_option'] = '';
@@ -106,19 +106,29 @@ class SearchForm extends Form {
         }
 
         $this->add([
-            'type' => 'submit',
+            'type' => 'button',
             'name' => 'submit',
             'attributes' => [
                 'value' => 'Search',
                 'id' => 'submitbutton',
+                'type' => 'submit',
+                'class' => 'search',
+            ],
+            'options' => [
+                'label' => 'Search'
             ],
         ]);
         $this->add([
-            'type' => 'submit',
+            'type' => 'button',
             'name' => 'clear',
             'attributes' => [
                 'value' => 'Clear',
                 'id' => 'clearbutton',
+                'type' => 'submit',
+                'class' => 'clear',
+            ],
+            'options' => [
+                'label' => 'Clear'
             ],
         ]);
     }

@@ -23,6 +23,21 @@ return [
                         'action'     => 'index',
                     ],
                 ],
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'language' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route' => '[/:lang]',
+                            'defaults' => array(
+                                'lang' => 'en', //default
+                            ),
+                            'constraints' => array(
+                                'lang' => '(en|de|fr|nl)?',
+                            ),
+                        ),
+                    ),
+                ),
             ],
             'application' => [
                 'type'    => Segment::class,
@@ -49,12 +64,14 @@ return [
         'exception_template'       => 'error/index',
         'template_map' => [
             'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
+            'admin/layout' => __DIR__ . '/../../Admin/view/layout/layout.phtml',
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
         ],
         'template_path_stack' => [
-            __DIR__ . '/../view',
+           'application' =>  __DIR__ . '/../view',
+//            'admin' => __DIR__ . '/../../Admin/view',
         ],
     ],
 ];

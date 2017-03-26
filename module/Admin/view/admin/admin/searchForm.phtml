@@ -2,7 +2,7 @@
     <div class="title">Search Filter</div>
 
         <?php
-        $tr = [];
+        $tr = '';
         if (!empty($this->searchList)) {
             foreach ($this->searchList as $key => $item) {
                 $field = '';
@@ -12,17 +12,24 @@
                     $field = $item;
                 }
                 $tFields = \Libs\Admin\Helper::transformFiled($field, $this->languages);
-                foreach ($tFields as $tField) {
+                foreach ($tFields as $lng => $tField) {
                     $td = [];
-                    $td[] = '<td>' . $this->formLabel($this->searchForm->get($tField)) . '</td>';
+
+                    $lngClass = '';
+                    if($lng != '0') {
+                        $lngClass = " class='lng {$lng}'";
+                        $td[] = '<td>' . $this->formLabel($this->searchForm->get($tField)) . "<span class='value-lng'>({$lng})</span></td>";
+                    } else {
+                        $td[] = '<td>' . $this->formLabel($this->searchForm->get($tField)) . '</td>';
+                    }
                     $td[] = '<td>' . $this->formElement($this->searchForm->get($tField)) . '</td>';
-                    $tr[] = implode('', $td);
+                    $tr .= "<tr{$lngClass}>" . implode('', $td) . '</tr>';
                 }
             }
 
             echo $this->form()->openTag($this->searchForm);
             echo '<div class="fields">';
-            echo '<table cellpadding="0" cellspacing="0"><tr>' . implode('</tr><tr>', $tr) . '</tr></table>';
+            echo '<table cellpadding="0" cellspacing="0"><tr>' . $tr . '</tr></table>';
             echo '</div>';
             echo '<div class="footer">';
             echo $this->formElement($this->searchForm->get('submit'));
