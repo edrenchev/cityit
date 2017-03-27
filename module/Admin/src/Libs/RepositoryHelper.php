@@ -6,7 +6,7 @@
  * Time: 11:48
  */
 
-namespace Libs\Admin;
+namespace Admin\Libs;
 
 
 class RepositoryHelper {

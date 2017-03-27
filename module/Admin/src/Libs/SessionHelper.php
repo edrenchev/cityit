@@ -6,7 +6,7 @@
  * Time: 12:34
  */
 
-namespace Libs\Admin;
+namespace Admin\Libs;
 
 use Zend\Session\Container;
 

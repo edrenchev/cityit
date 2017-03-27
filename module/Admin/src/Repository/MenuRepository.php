@@ -4,7 +4,7 @@ namespace Admin\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Admin\Entity\Menu;
-use Libs\Admin\RepositoryHelper;
+use Admin\Libs\RepositoryHelper;
 
 class MenuRepository extends EntityRepository {
 

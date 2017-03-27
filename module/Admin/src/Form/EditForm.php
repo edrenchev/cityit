@@ -9,7 +9,7 @@
 
 namespace Admin\Form;
 
-use Libs\Admin\Helper;
+use Admin\Libs\Helper;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilter;
 

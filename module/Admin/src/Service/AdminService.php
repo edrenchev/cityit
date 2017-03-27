@@ -11,7 +11,7 @@ namespace Admin\Service;
 
 use Admin\Entity\MenuLng;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Libs\Admin\Helper;
+use Admin\Libs\Helper;
 
 class AdminService {
 

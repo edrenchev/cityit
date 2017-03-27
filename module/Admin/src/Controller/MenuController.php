@@ -5,9 +5,9 @@ use Admin\Entity\MenuLng;
 use Admin\Form\EditForm;
 use Admin\Paginator\Adapter;
 use Admin\Service\AdminService;
-use Libs\Admin\Helper;
-use Libs\Admin\ListTable;
-use Libs\Admin\SessionHelper;
+use Admin\Libs\Helper;
+use Admin\Libs\ListTable;
+use Admin\Libs\SessionHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Paginator\Paginator;
 use Zend\Session\Container;
@@ -308,7 +308,7 @@ class MenuController extends AbstractActionController {
 
                 $q = $this->entityManager->getConnection()->prepare('SET @ord := 0;UPDATE menu SET ord = (@ord := @ord+1) ORDER BY ord;', $rsm);
                 $q->execute();
-                
+
                 // Redirect the user to "admin" page.
                 return $this->redirect()->toRoute('menu', ['action' => 'edit', 'id' => $recordId]);
             }

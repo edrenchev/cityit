@@ -6,7 +6,7 @@
  * Time: 21:31
  */
 
-namespace Libs\Admin;
+namespace Admin\Libs;
 
 
 class ListTable {

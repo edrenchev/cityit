@@ -6,7 +6,7 @@
  * Time: 11:35
  */
 
-namespace Libs\Admin;
+namespace Admin\Libs;
 
 
 class Helper {
