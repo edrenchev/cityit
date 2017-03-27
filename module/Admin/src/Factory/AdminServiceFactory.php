@@ -18,6 +18,6 @@ class AdminServiceFactory {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
         $config = $container->get('config');
 
-        return new AdminService($entityManager, $config['site_config']);
+        return new AdminService($entityManager, $config['siteConfig']);
     }
 }

@@ -155,7 +155,7 @@ EOD;
                 } elseif ($key == '_selectId') {
                     $value = "<input type='checkbox' name='checked[{$item[$key]}]' value='{$item[$key]}' />";
                 } elseif (isset($this->mapData[$key])) {
-                    $value = htmlspecialchars($this->mapData[$key][$item[$key]]);
+                    $value = isset($this->mapData[$key][$item[$key]]) ? htmlspecialchars($this->mapData[$key][$item[$key]]) : $item[$key];
                 } else {
                     $value = htmlspecialchars($item[$key]);
                 }

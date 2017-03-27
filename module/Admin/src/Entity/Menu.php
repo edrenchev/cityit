@@ -50,6 +50,11 @@ class Menu extends AdminEntity {
     protected $name;
 
     /**
+     * @ORM\Column(name="page_module")
+     */
+    protected $pageModule;
+
+    /**
      * @ORM\Column(name="skin_id")
      */
     protected $skinId;
@@ -175,6 +180,20 @@ class Menu extends AdminEntity {
      */
     public function setName($name) {
         $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPageModule() {
+        return $this->pageModule;
+    }
+
+    /**
+     * @param mixed $pageModule
+     */
+    public function setPageModule($pageModule) {
+        $this->pageModule = $pageModule;
     }
 
     /**

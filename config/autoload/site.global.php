@@ -7,10 +7,15 @@
  */
 
 return [
-    'site_config' => [
+    'siteConfig' => [
         'languages' => [
             'bg_BG' => 'Bulgarian',
             'en_GB' => 'English',
+        ],
+        'pageModules' => [
+            'home' => 'Home Page',
+            'static' => 'Static Page',
+            'news' => 'News Page',
         ],
     ],
 ];

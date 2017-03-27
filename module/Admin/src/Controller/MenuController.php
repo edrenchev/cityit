@@ -48,6 +48,10 @@ class MenuController extends AbstractActionController {
             'title' => 'Name',
             'type' => 'char'
         ],
+        'pageModule' => [
+            'title' => 'Page Module',
+            'type' => 'enum'
+        ],
         'skinId' => [
             'title' => 'Skin Id',
             'type' => 'integer'
@@ -134,6 +138,7 @@ class MenuController extends AbstractActionController {
         'tags',
         'url',
         'name',
+        'pageModule',
         'skinId',
         'templateId',
         'params',
@@ -155,6 +160,7 @@ class MenuController extends AbstractActionController {
 
     public $search = [
         'name',
+        'pageModule',
         '*.isActive',
 //        'createDateFrom' => [
 //            'title' => 'Create Date From',
@@ -175,6 +181,7 @@ class MenuController extends AbstractActionController {
 
     public $list = [
         'name',
+        'pageModule',
         '*.isActive',
         '*.menuTitle',
         '*.pageTitle',
@@ -221,6 +228,8 @@ class MenuController extends AbstractActionController {
         $this->siteConfig = $siteConfig;
         $this->sessionContainer = $sessionContainer;
         $this->adminService = $adminService;
+
+        $this->model['pageModule']['options'] = $this->siteConfig['pageModules'];
     }
 
     public function indexAction() {
@@ -371,7 +380,8 @@ class MenuController extends AbstractActionController {
                 $q->execute();
 
                 // Redirect the user to "admin" page.
-                return $this->redirect()->toRoute('menu', ['action' => 'edit', 'id' => $recordId]);
+//                return $this->redirect()->toRoute('menu', ['action' => 'edit', 'id' => $recordId]);
+                return $this->redirect()->toRoute('menu');
             }
         }
 

@@ -26,6 +26,6 @@ class MenuControllerFactory {
         $adminService = $container->get(AdminService::class);
 
         // Instantiate the controller and inject dependencies
-        return new MenuController($entityManager, $config['site_config'], $sessionContainer, $adminService);
+        return new MenuController($entityManager, $config['siteConfig'], $sessionContainer, $adminService);
     }
 }
