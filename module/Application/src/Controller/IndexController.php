@@ -15,4 +15,22 @@ class IndexController extends AbstractActionController {
     public function indexAction() {
         return new ViewModel();
     }
+
+    public function staticAction() {
+        // Get path to view template from route params
+        $pageTemplate = $this->params()->fromRoute('page', null);
+        echo '<pre>'.print_r($pageTemplate,true).'</pre>';
+        die();
+        if ($pageTemplate == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+
+        // Render the page
+        $viewModel = new ViewModel([
+            'page' => $pageTemplate
+        ]);
+        $viewModel->setTemplate($pageTemplate);
+        return $viewModel;
+    }
 }

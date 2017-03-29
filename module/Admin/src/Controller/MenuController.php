@@ -250,7 +250,7 @@ class MenuController extends AbstractActionController {
                     SessionHelper::addItemsPerPage($this->sessionContainer, static::class, $action['addItemsPerPage']);
                 } elseif (isset($action['delete']) && !empty($data['checked'])) {
                     $deleteIds = implode(',', $data['checked']);
-                    return $this->redirect()->toRoute('menu', ['action' => 'delete', 'id' => $deleteIds]);
+                    return $this->redirect()->toRoute('admin/menu', ['action' => 'delete', 'id' => $deleteIds]);
                 }
             } else {
                 $data = $this->params()->fromPost();
@@ -283,7 +283,7 @@ class MenuController extends AbstractActionController {
         $paginator->setCurrentPageNumber($page)->setItemCountPerPage($ipp);
 
 //        $listTable = new ListTable($thead, $orders, $result, 'menu', '', '');
-        $listTable = new ListTable($this->model, $this->list, SessionHelper::getOrdersData($this->sessionContainer, static::class), $paginator, $this->siteConfig['languages'], 'menu', '', '', 25, $this->url()->fromRoute('menu'));
+        $listTable = new ListTable($this->model, $this->list, SessionHelper::getOrdersData($this->sessionContainer, static::class), $paginator, $this->siteConfig['languages'], 'admin/menu', '', '', 25, $this->url()->fromRoute('admin/menu'));
 
         $view = new ViewModel([
             'listTable' => $listTable,
@@ -292,7 +292,7 @@ class MenuController extends AbstractActionController {
             'searchList' => $this->search,
             'languages' => $this->siteConfig['languages'],
             'paginator' => $paginator,
-            'routeName' => 'menu',
+            'routeName' => 'admin/menu',
         ]);
         return $view->setTemplate('admin/admin/index');
     }
@@ -319,7 +319,7 @@ class MenuController extends AbstractActionController {
                 $q->execute();
 
                 // Redirect the user to "admin" page.
-                return $this->redirect()->toRoute('menu', ['action' => 'edit', 'id' => $recordId]);
+                return $this->redirect()->toRoute('admin/menu', ['action' => 'edit', 'id' => $recordId]);
             }
         }
 
@@ -381,7 +381,7 @@ class MenuController extends AbstractActionController {
 
                 // Redirect the user to "admin" page.
 //                return $this->redirect()->toRoute('menu', ['action' => 'edit', 'id' => $recordId]);
-                return $this->redirect()->toRoute('menu');
+                return $this->redirect()->toRoute('admin/menu');
             }
         }
 
@@ -400,7 +400,7 @@ class MenuController extends AbstractActionController {
         if ($ids != -1) {
             $this->adminService->delete($ids, Menu::class);
         }
-        return $this->redirect()->toRoute('menu');
+        return $this->redirect()->toRoute('admin/menu');
     }
 
     public function treeAction() {
@@ -454,8 +454,8 @@ class MenuController extends AbstractActionController {
 	      </div>
 	      <div class='nested-list-content'>{$item->getName()}
 	        <div class='pull-right'>
-	          <a href='" . $this->url()->fromRoute('menu', ['action'=>'edit', 'id'=>$item->getId()]) . "'>Edit</a> |
-	          <a href='" . $this->url()->fromRoute('menu', ['action'=>'delete', 'id'=>$item->getId()]) . "'>Delete</a> |
+	          <a href='" . $this->url()->fromRoute('admin/menu', ['action'=>'edit', 'id'=>$item->getId()]) . "'>Edit</a> |
+	          <a href='" . $this->url()->fromRoute('admin/menu', ['action'=>'delete', 'id'=>$item->getId()]) . "'>Delete</a> |
 	          <a class='selected' data-id='{$item->getId()}' href='selected'>Seleted</a>
 	        </div>
 	      </div>" . $this->buildMenu($menu, $item->getId()) . "</li>";

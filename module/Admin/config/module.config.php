@@ -10,13 +10,36 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 return [
     'router' => [
         'routes' => [
-            'menu' => [
-                'type' => Segment::class,
+            'admin' => [
+                'type' => Literal::class,
                 'options' => [
-                    'route' => '/admin/menu[/:action[/:id]]',
+                    'route' => '/admin',
                     'defaults' => [
-                        'controller' => Controller\MenuController::class,
+                        'controller' => Controller\IndexController::class,
                         'action' => 'index',
+                    ],
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'menu' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/menu[/:action[/:id]]',
+                            'defaults' => [
+                                'controller' => Controller\MenuController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
+                    'static' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/static[/:action[/:id]]',
+                            'defaults' => [
+                                'controller' => Controller\StaticPageController::class,
+                                'action' => 'index',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -24,7 +47,9 @@ return [
     ],
     'controllers' => [
         'factories' => [
+            Controller\IndexController::class => InvokableFactory::class,
             Controller\MenuController::class => Factory\MenuControllerFactory::class,
+            Controller\StaticPageController::class => Factory\StaticPageFactory::class,
         ],
     ],
     'service_manager' => [

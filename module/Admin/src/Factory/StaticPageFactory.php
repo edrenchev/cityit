@@ -2,18 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: ervin
- * Date: 12.01.2017
- * Time: 20:50
+ * Date: 29.03.2017
+ * Time: 21:23
  */
 
 namespace Admin\Factory;
 
 use Admin\Service\AdminService;
 use Interop\Container\ContainerInterface;
-use Admin\Controller\MenuController;
+use Admin\Controller\StaticPageController;
 
-class MenuControllerFactory {
 
+class StaticPageFactory {
     public function __invoke(ContainerInterface $container,
                              $requestedName, array $options = null) {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
@@ -25,6 +25,6 @@ class MenuControllerFactory {
         $adminService = $container->get(AdminService::class);
 
         // Instantiate the controller and inject dependencies
-        return new MenuController($entityManager, $config['siteConfig'], $sessionContainer, $adminService);
+        return new StaticPageController($entityManager, $config['siteConfig'], $sessionContainer, $adminService);
     }
 }

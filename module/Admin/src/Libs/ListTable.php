@@ -92,6 +92,9 @@ EOD
     }
 
     public function setTableData($data) {
+
+        if($data->count() == 0) return [];
+
         foreach ($data as $k => $item) {
             $this->tableData[$k]['_selectId'] = $item['t_id'];
             $this->tableData[$k]['_editId'] = $item['t_id'];

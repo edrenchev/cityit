@@ -58,12 +58,16 @@ return [
         'AdminMenu' => [
             [
                 'label' => 'Menu',
-                'route' => 'menu',
+                'route' => 'admin/menu',
             ],
             [
                 'label' => 'Menu tree',
-                'route' => 'menu',
+                'route' => 'admin/menu',
                 'action' => 'tree'
+            ],
+            [
+                'label' => 'Static pages',
+                'route' => 'admin/static',
             ],
         ],
     ],

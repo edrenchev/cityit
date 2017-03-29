@@ -8,13 +8,13 @@ $this->headScript()->prependFile($this->basePath('nestable/jquery.nestable.js'))
 <div class="row">
     <div class="col-md-8">
         <div class="well">
-            <form id="add-menu" action="<?= $this->url('menu', ['action'=>'add']) ?>">
+            <form id="add-menu" action="<?= $this->url('admin/menu', ['action'=>'add']) ?>">
             <p class="lead">
 
-                <button type="button" id="add-child" href="<?= $this->url('menu', ['action' => 'add']) ?>" class="btn btn-default pull-right"><span
+                <button type="button" id="add-child" href="<?= $this->url('admin/menu', ['action' => 'add']) ?>" class="btn btn-default pull-right"><span
                         class="glyphicon glyphicon-plus-sign"></span> Add as child of</button>
                 <span class="pull-right" style="padding-left: 15px;">&nbsp;</span>
-                <button type="button" id="add-after" href="<?= $this->url('menu', ['action' => 'add']) ?>" class="btn btn-default pull-right"><span
+                <button type="button" id="add-after" href="<?= $this->url('admin/menu', ['action' => 'add']) ?>" class="btn btn-default pull-right"><span
                         class="glyphicon glyphicon-plus-sign"></span> Add after</button>
 
             Menu:</p>
@@ -50,7 +50,7 @@ $this->headScript()->prependFile($this->basePath('nestable/jquery.nestable.js'))
                         rootOrder[index] = $(elem).attr('data-id');
                     });
                 }
-                $.post('<?= $this->url('menu', ['action'=>'tree']) ?>',
+                $.post('<?= $this->url('admin/menu', ['action'=>'tree']) ?>',
                     {
                         source: details.sourceId,
                         destination: details.destId,
