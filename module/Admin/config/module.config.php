@@ -43,6 +43,16 @@ return [
                     ],
                 ],
             ],
+            'images' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/images[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\ImageController::class,
+                        'action' => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
@@ -50,6 +60,7 @@ return [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\MenuController::class => Factory\MenuControllerFactory::class,
             Controller\StaticPageController::class => Factory\StaticPageFactory::class,
+            Controller\ImageController::class => InvokableFactory::class,
         ],
     ],
     'service_manager' => [
@@ -63,6 +74,9 @@ return [
     'view_manager' => [
         'template_path_stack' => [
             'admin' => __DIR__ . '/../view',
+        ],
+        'strategies' => [
+            'ViewJsonStrategy',
         ],
     ],
     'doctrine' => [
