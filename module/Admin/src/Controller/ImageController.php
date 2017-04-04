@@ -14,29 +14,49 @@ use Zend\View\Model\ViewModel;
 
 class ImageController extends AbstractActionController {
 
-    public function indexAction() {
+	public function indexAction() {
 
-        $form = new ImageForm();
+		$form = new ImageForm();
 
-        if($this->getRequest()->isPost()) {
-            $request = $this->getRequest();
-            $data = $request->getFiles()->toArray();
+		if ($this->getRequest()->isPost()) {
+			$request = $this->getRequest();
+			$data = $request->getFiles()->toArray();
 
-            $form->setData($data);
+			$form->setData($data);
 
-            if($form->isValid()) {
-                $data = $form->getData();
-            }
+			if ($form->isValid()) {
+				$data = $form->getData();
+			}
 
-            echo '<pre>'.print_r($data,true).'</pre>';
-            die();
-        }
-        return new ViewModel();
-    }
-    public function addAction() {
+			$prepareFiles = [];
 
-        return new JsonModel([
-            'v' => 'asd'
-        ]);
-    }
+			if (!empty($data['files'])) {
+				foreach ($data['files'] as $file) {
+					$prepareFiles[] = [
+						'name' => $file['name'],
+						'size' => $file['size'],
+						'url' => '/images/' . $file['name'],
+						'thumbnailUrl' => '/images/thumb/' . $file['name'],
+						'deleteUrl' => '/images/delete/' . $file['name'],
+						'deleteType' => 'DELETE',
+					];
+				}
+			}
+
+			return new JsonModel([
+				'files' => $prepareFiles
+			]);
+
+//            echo '<pre>'.print_r($data,true).'</pre>';
+
+		}
+		return new ViewModel();
+	}
+
+	public function addAction() {
+
+		return new JsonModel([
+			'v' => 'asd'
+		]);
+	}
 }

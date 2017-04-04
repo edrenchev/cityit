@@ -45,7 +45,7 @@ class ImageForm extends Form
             'name' => 'file',
             'attributes' => [
                 'id' => 'file',
-                'multiple' => true,
+//                'multiple' => true,
             ],
             'options' => [
                 'label' => 'Image file',

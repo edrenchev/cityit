@@ -17,7 +17,7 @@
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
         define([
-            'jquery.fileupload.js',
+            'jquery',
             'load-image',
             './jquery.fileupload-process'
         ], factory);
