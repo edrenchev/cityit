@@ -48,7 +48,7 @@ return [
                 'options' => [
                     'route' => '/images[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Controller\ImageController::class,
+                        'controller' => Controller\FileController::class,
                         'action' => 'index',
                     ],
                 ],
@@ -60,7 +60,7 @@ return [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\MenuController::class => Factory\MenuControllerFactory::class,
             Controller\StaticPageController::class => Factory\StaticPageFactory::class,
-            Controller\ImageController::class => InvokableFactory::class,
+            Controller\FileController::class => Factory\FileFactory::class,
         ],
     ],
     'service_manager' => [
